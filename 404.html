@@ -1653,6 +1653,22 @@ function finishTest() {
 // ═══════════════════════════════════════════════════
 // 结果计算
 // ═══════════════════════════════════════════════════
+
+// 核心四字母映射：选最能体现差异的4个维度
+const CORE_LETTERS = [
+    { key: 'social',    name: '社交', high: 'E', low: 'I', highName: '社交牛逼', lowName: '社恐自闭' },
+    { key: 'quanjuan',  name: '卷度', high: 'Q', low: 'G', highName: '拼命三郎', lowName: '苟住就好' },
+    { key: 'emotion',   name: '情绪', high: 'F', low: 'T', highName: '情绪化',    lowName: '冷静控场' },
+    { key: 'tangping',  name: '躺平', high: 'T', low: 'P', highName: '躺平大师',  lowName: '拼命卷王' },
+];
+
+// 计算维度方向（高=正向1，低=负向-1，中间=0）
+function getDimDir(key, avg) {
+    if (avg >= 3.5) return 1;
+    if (avg <= 2.0) return -1;
+    return 0; // 2.0~3.5 视为摇摆
+}
+
 function calculateResult() {
     // 计算每个维度的平均分
     const dimAvgs = {};
@@ -1660,101 +1676,243 @@ function calculateResult() {
         dimAvgs[key] = scores.reduce((a, b) => a + b, 0) / scores.length;
     });
 
-    // 生成SBTI 4字母代码
-    // 按固定顺序取4个关键维度
-    const letterOrder = ['social', 'quanjuan', 'emotion', 'tangping'];
-    const letterNames = ['社交', '卷度', '情绪', '躺平'];
-
+    // ── 1. 计算核心4字母代码 ──
     const sbtiCode = [];
     const letterInfo = [];
-
-    letterOrder.forEach((key, i) => {
-        const avg = dimAvgs[key] || 3;
+    CORE_LETTERS.forEach(cl => {
+        const avg = dimAvgs[cl.key] || 3;
         let letter, desc;
         if (avg >= 3.5) {
-            letter = questionOrder.find(q => q.dimKey === key)?.dimLetter.high || 'X';
-            desc = questionOrder.find(q => q.dimKey === key)?.dimLetter.highName || '高分';
-        } else if (avg <= 2.5) {
-            letter = questionOrder.find(q => q.dimKey === key)?.dimLetter.low || 'X';
-            desc = questionOrder.find(q => q.dimKey === key)?.dimLetter.lowName || '低分';
+            letter = cl.high;
+            desc = cl.highName;
+        } else if (avg <= 2.0) {
+            letter = cl.low;
+            desc = cl.lowName;
         } else {
-            letter = 'M';
-            desc = '中间摇摆';
+            // 接近哪边判哪边
+            const dist = avg - 2.5;
+            if (dist > 0.6) { letter = cl.high; desc = cl.highName; }
+            else if (dist < -0.6) { letter = cl.low; desc = cl.lowName; }
+            else { letter = 'M'; desc = '中间摇摆'; }
         }
         sbtiCode.push(letter);
-        letterInfo.push({ letter, name: letterNames[i], desc });
+        letterInfo.push({ letter, name: cl.name, desc });
     });
 
     const codeStr = sbtiCode.join('');
 
-    // 查找匹配人格
-    let pType = PERSONALITY_TYPES[codeStr];
+    // ── 2. 加权综合评分，匹配人格类型 ──
+    // 标准化所有维度到 -1 ~ 1 范围（-2分=1，5分=1）
+    const norm = {};
+    Object.entries(dimAvgs).forEach(([k, v]) => {
+        norm[k] = (v - 1) / 4 * 2 - 1; // 映射到 [-1, 1]
+    });
 
-    // 如果精确匹配没找到，尝试模糊匹配
-    if (!pType) {
-        // 尝试组合隐藏人格
-        const social = dimAvgs.social || 3;
-        const quanjuan = dimAvgs.quanjuan || 3;
-        const emotion = dimAvgs.emotion || 3;
-        const tangping = dimAvgs.tangping || 3;
-        const inner = dimAvgs.inner || 3;
-        const boundary = dimAvgs.boundary || 3;
-        const resilience = dimAvgs.resilience || 3;
-        const depend = dimAvgs.depend || 3;
-        const fake = dimAvgs.fake || 3;
-        const reality = dimAvgs.reality || 3;
+    const scores = {};
 
-        // IQGH: 社恐+苟+高内耗+边界弱
-        if (social < 2.5 && quanjuan < 2.5 && inner > 3.5 && boundary > 3.5) {
-            pType = PERSONALITY_TYPES.IQGH;
-        }
-        // EQFT: 社交+卷+情绪化+躺平
-        else if (social > 3.5 && quanjuan > 3.5 && emotion > 3.5 && tangping < 2.5) {
-            pType = PERSONALITY_TYPES.EQFT;
-        }
-        // IGTT: 社恐+苟+躺平+打工情绪
-        else if (social < 2.5 && quanjuan < 2.5 && tangping > 3.5) {
-            pType = PERSONALITY_TYPES.IGTT;
-        }
-        // ENBX: 社交+边界清晰+自驱
-        else if (social > 3.5 && boundary < 2.5 && quanjuan > 3.5) {
-            pType = PERSONALITY_TYPES.ENBX;
-        }
-        // IQWV: 社恐+卷+边界弱+依赖
-        else if (social < 2.5 && quanjuan > 3.5 && boundary > 3.5 && depend > 3.5) {
-            pType = PERSONALITY_TYPES.IQWV;
-        }
-        // NTLD: 卷和躺都很高（矛盾体）
-        else if ((quanjuan > 3.5 && tangping > 3.5) || (quanjuan > 3 && quanjuan < 4 && tangping > 3 && tangping < 4)) {
-            pType = PERSONALITY_TYPES.NTLD;
-        }
-        // FVSK: 情绪化+依赖+真实度高反差
-        else if (emotion > 3.5 && depend > 3.5 && fake > 3.5) {
-            pType = PERSONALITY_TYPES.FVSK;
-        }
-        // ????: 各维度差异极大
-        else {
-            const vals = Object.values(dimAvgs);
-            const max = Math.max(...vals);
-            const min = Math.min(...vals);
-            if (max - min > 2.5) {
-                pType = PERSONALITY_TYPES['????'];
-            } else if (max < 2.5 && min < 2.5) {
-                pType = PERSONALITY_TYPES.XXXX;
-            } else {
-                // 兜底到最近的4字母人格
-                pType = PERSONALITY_TYPES.ENQT;
-            }
-        }
-    }
+    // ENQT: 极度上进型（卷+理性+抗压+边界清晰）
+    scores.ENQT = Math.max(0,
+        (norm.quanjuan + 1) * 0.3 +
+        (1 - norm.emotion + 1) * 0.2 +   // 冷静
+        (norm.resilience + 1) * 0.2 +     // 抗压
+        (1 - norm.boundary + 1) * 0.15 + // 边界清晰
+        (1 - norm.tangping + 1) * 0.15   // 不躺平
+    );
 
-    // 计算匹配度（基于题目回答一致性）
-    const matchRate = Math.floor(72 + Math.random() * 18);
+    // ENFP: 社交狂热型
+    scores.ENFP = Math.max(0,
+        (norm.social + 1) * 0.35 +
+        (norm.tangping + 1) * 0.2 +
+        (norm.emotion + 1) * 0.2 +
+        (1 - norm.boundary + 1) * 0.15 +
+        (1 - norm.quanjuan + 1) * 0.1
+    );
 
-    // 生成标签
-    const tags = pType.tags.slice(0, 4);
+    // INFP: 内耗诗人型
+    scores.INFP = Math.max(0,
+        (1 - norm.social + 1) * 0.2 +
+        (norm.inner + 1) * 0.3 +
+        (norm.emotion + 1) * 0.2 +
+        (norm.fake + 1) * 0.15 +
+        (1 - norm.resilience + 1) * 0.15
+    );
 
-    // 维度雷达图数据
+    // ISFP: 躺平大师型
+    scores.ISFP = Math.max(0,
+        (norm.tangping + 1) * 0.35 +
+        (1 - norm.quanjuan + 1) * 0.25 +
+        (1 - norm.social + 1) * 0.2 +
+        (1 - norm.emotion + 1) * 0.1 +
+        (1 - norm.value + 1) * 0.1
+    );
+
+    // ENTJ: 霸道总裁型
+    scores.ENTJ = Math.max(0,
+        (norm.quanjuan + 1) * 0.3 +
+        (norm.social + 1) * 0.25 +
+        (norm.decision + 1) * 0.2 +
+        (norm.resilience + 1) * 0.15 +
+        (1 - norm.emotion + 1) * 0.1
+    );
+
+    // INTJ: 孤独智者型
+    scores.INTJ = Math.max(0,
+        (1 - norm.social + 1) * 0.25 +
+        (norm.decision + 1) * 0.3 +
+        (norm.reality + 1) * 0.2 +
+        (norm.self + 1) * 0.15 +
+        (1 - norm.emotion + 1) * 0.1
+    );
+
+    // ESFJ: 老好天使型
+    scores.ESFJ = Math.max(0,
+        (norm.social + 1) * 0.3 +
+        (norm.boundary + 1) * 0.25 +    // 讨好型 = 边界弱
+        (norm.depend + 1) * 0.2 +
+        (1 - norm.decision + 1) * 0.15 +
+        (1 - norm.tangping + 1) * 0.1
+    );
+
+    // ISFJ: 沉默守护型
+    scores.ISFJ = Math.max(0,
+        (1 - norm.social + 1) * 0.25 +
+        (norm.boundary + 1) * 0.2 +
+        (1 - norm.quanjuan + 1) * 0.2 +
+        (norm.inner + 1) * 0.2 +
+        (norm.depend + 1) * 0.15
+    );
+
+    // ENFJ: 精神领袖型
+    scores.ENFJ = Math.max(0,
+        (norm.social + 1) * 0.3 +
+        (norm.emotion + 1) * 0.2 +
+        (1 - norm.boundary + 1) * 0.2 +
+        (norm.value + 1) * 0.15 +        // 在意外界评价
+        (norm.depend + 1) * 0.15
+    );
+
+    // INFJ: 治愈天使型
+    scores.INFJ = Math.max(0,
+        (1 - norm.social + 1) * 0.2 +
+        (norm.emotion + 1) * 0.25 +
+        (norm.inner + 1) * 0.2 +
+        (norm.self + 1) * 0.2 +
+        (norm.fake + 1) * 0.15
+    );
+
+    // ESTP: 享乐主义型
+    scores.ESTP = Math.max(0,
+        (norm.social + 1) * 0.3 +
+        (norm.tangping + 1) * 0.25 +
+        (norm.reality + 1) * 0.2 +
+        (1 - norm.decision + 1) * 0.15 +
+        (1 - norm.inner + 1) * 0.1
+    );
+
+    // ISTP: 技术宅神型
+    scores.ISTP = Math.max(0,
+        (1 - norm.social + 1) * 0.3 +
+        (1 - norm.emotion + 1) * 0.25 +
+        (norm.decision + 1) * 0.25 +
+        (1 - norm.quanjuan + 1) * 0.2
+    );
+
+    // ENTP: 杠精本精型
+    scores.ENTP = Math.max(0,
+        (norm.social + 1) * 0.3 +
+        (norm.emotion + 1) * 0.2 +
+        (norm.quanjuan + 1) * 0.2 +
+        (1 - norm.boundary + 1) * 0.15 +
+        (norm.action + 1) * 0.15
+    );
+
+    // IQGH: 精神堪忧型
+    scores.IQGH = Math.max(0,
+        (1 - norm.social + 1) * 0.2 +
+        (1 - norm.quanjuan + 1) * 0.2 +
+        (norm.inner + 1) * 0.3 +
+        (1 - norm.resilience + 1) * 0.2 +
+        (norm.boundary + 1) * 0.1
+    );
+
+    // EQFT: 白天卷王晚上emo型
+    scores.EQFT = Math.max(0,
+        (norm.social + 1) * 0.2 +
+        (norm.quanjuan + 1) * 0.2 +
+        (norm.emotion + 1) * 0.25 +
+        (norm.inner + 1) * 0.2 +
+        (1 - norm.tangping + 1) * 0.15
+    );
+
+    // IGTT: 高级牛马型
+    scores.IGTT = Math.max(0,
+        (1 - norm.social + 1) * 0.25 +
+        (1 - norm.quanjuan + 1) * 0.15 +
+        (norm.tangping + 1) * 0.25 +
+        (norm.boundary + 1) * 0.15 +
+        (1 - norm.resilience + 1) * 0.2
+    );
+
+    // ENBX: 人间清醒型
+    scores.ENBX = Math.max(0,
+        (norm.social + 1) * 0.2 +
+        (1 - norm.boundary + 1) * 0.25 + // 边界清晰
+        (1 - norm.inner + 1) * 0.25 +    // 不内耗
+        (norm.self + 1) * 0.15 +
+        (norm.quanjuan + 1) * 0.15
+    );
+
+    // IQWV: 脆皮打工人型
+    scores.IQWV = Math.max(0,
+        (1 - norm.social + 1) * 0.2 +
+        (norm.quanjuan + 1) * 0.2 +
+        (norm.boundary + 1) * 0.25 +
+        (norm.depend + 1) * 0.2 +
+        (1 - norm.resilience + 1) * 0.15
+    );
+
+    // NTLD: 躺卷矛盾体
+    scores.NTLD = Math.max(0,
+        Math.abs(norm.quanjuan - norm.tangping) * 0.4 + // 卷躺差距大
+        (norm.inner + 1) * 0.3 +
+        (norm.emotion + 1) * 0.2 +
+        (1 - norm.self + 1) * 0.1
+    );
+
+    // FVSK: 表面平静内心疯狂型
+    scores.FVSK = Math.max(0,
+        (1 - norm.emotion + 1) * 0.25 +  // 表面冷静
+        (norm.emotion + 1) * 0.2 +        // 内心情绪化
+        (norm.fake + 1) * 0.25 +          // 人设表演
+        (norm.depend + 1) * 0.15 +
+        (1 - norm.social + 1) * 0.15
+    );
+
+    // ????: 薛定谔人格（维度间差异极大）
+    const vals = Object.values(norm);
+    const max = Math.max(...vals);
+    const min = Math.min(...vals);
+    scores['????'] = Math.max(0, max - min - 0.8) * 0.8;
+
+    // XXXX: 六边形战士（各维度均衡且偏正向）
+    const avgAll = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const variance = vals.reduce((s, v) => s + (v - avgAll) ** 2, 0) / vals.length;
+    scores.XXXX = Math.max(0, 0.8 - variance * 2) + Math.max(0, avgAll + 0.5) * 0.3;
+
+    // ── 3. 选最高分人格 ──
+    let bestType = 'ENQT';
+    let bestScore = 0;
+    Object.entries(scores).forEach(([type, sc]) => {
+        if (sc > bestScore) { bestScore = sc; bestType = type; }
+    });
+
+    // ── 4. 一致性校准：反向题是否与整体人格矛盾 ──
+    const consistencyScore = computeConsistency(dimAvgs);
+    const matchRate = Math.floor(
+        Math.min(95, 65 + bestScore * 12 + consistencyScore * 5 + Math.random() * 8)
+    );
+
+    // ── 5. 雷达图数据 ──
     const radarKeys = ['social', 'quanjuan', 'action', 'emotion', 'tangping', 'boundary', 'inner', 'reality', 'resilience', 'value', 'stress', 'self', 'fake', 'decision', 'depend'];
     const radarNames = ['社交', '卷度', '行动', '情绪', '躺平', '边界', '内耗', '现实', '韧性', '价值', '压力', '自知', '真实', '决策', '依附'];
     const radarData = radarKeys.map((k, i) => ({
@@ -1763,19 +1921,46 @@ function calculateResult() {
         raw: dimAvgs[k] || 3
     }));
 
+    // ── 6. 兼容类型（取与最佳人格相关的次高分） ──
+    const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+    const compat = sorted.slice(0, 5).filter(([k]) => k !== bestType).map(([k]) => k);
+
     finalResult = {
-        code: codeStr,
-        nickname: pType.name,
-        emoji: pType.emoji,
-        tags,
-        desc: pType.desc,
+        code: bestType,
+        nickname: PERSONALITY_TYPES[bestType]?.name || bestType,
+        emoji: PERSONALITY_TYPES[bestType]?.emoji || '🧩',
+        tags: PERSONALITY_TYPES[bestType]?.tags || [],
+        desc: PERSONALITY_TYPES[bestType]?.desc || '未知人格类型',
         matchRate,
         letterInfo,
-        compat: pType.compat,
+        compat,
         radarData
     };
 
     renderResult();
+}
+
+// 计算回答一致性（同一维度的正向题和反向题是否矛盾）
+function computeConsistency(dimAvgs) {
+    let contradictions = 0;
+    // 检查边界维度：D6-1(讨好) 和 D6-2(拒绝) 是否矛盾
+    if (dimAvgs.boundary) {
+        const scores = dimScores['boundary'] || [];
+        if (scores.length >= 2) {
+            // 一个高一个低=矛盾
+            if ((scores[0] > 3 && scores[1] < 3) || (scores[0] < 3 && scores[1] > 3)) {
+                contradictions++;
+            }
+        }
+    }
+    // 检查内耗维度
+    if (dimScores.inner && dimScores.inner.length >= 2) {
+        if ((dimScores.inner[0] > 3 && dimScores.inner[1] < 3) || (dimScores.inner[0] < 3 && dimScores.inner[1] > 3)) {
+            contradictions++;
+        }
+    }
+    // 一致性越高分越高（矛盾越多分越低）
+    return Math.max(0, 1 - contradictions * 0.3);
 }
 
 function renderResult() {
@@ -1809,7 +1994,7 @@ function renderResult() {
         interpEl.appendChild(div);
     });
 
-    // 兼容类型
+    // 兼容类型（取与最佳人格相关的次高分）
     const compatList = document.getElementById('compatList');
     compatList.innerHTML = '';
     r.compat.slice(0, 3).forEach(code => {
@@ -1876,7 +2061,7 @@ function closeEaster() {
 // ═══════════════════════════════════════════════════
 function shareResult() {
     if (!finalResult) return;
-    const text = `我的 NISB 人格结果：${finalResult.code} ${finalResult.emoji} ${finalResult.nickname}\n匹配度：${finalResult.matchLevel}%\n\n"你不是性格有问题，你只是 NISB。"\n测测你的：${location.href}`;
+    const text = `我的 NISB 人格结果：${finalResult.code} ${finalResult.emoji} ${finalResult.nickname}\n匹配度：${finalResult.matchRate}%\n\n"你不是性格有问题，你只是 NISB。"\n测测你的：${location.href}`;
 
     if (navigator.share) {
         navigator.share({ title: 'NISB 人格测试', text, url: location.href }).catch(() => {});
