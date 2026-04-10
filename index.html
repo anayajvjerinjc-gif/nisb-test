@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NISB 人格测试 - 测出你的真实精神状态</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --accent: #f093fb;
+            --dark: #0f0f23;
+            --dark-light: #1a1a2e;
+            --text: #e4e4e7;
+            --text-dim: #a1a1aa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景动画 */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.15;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 页面 */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页 */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+        }
+
+        .hero-tagline {
+            font-size: 18px;
+            color: var(--accent);
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 人格类型展示 */
+        .types-preview {
+            margin-top: 60px;
+            text-align: left;
+        }
+
+        .types-preview h3 {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .types-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .type-chip {
+            background: var(--dark-light);
+            padding: 12px 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .type-chip:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .type-chip-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .type-chip-desc {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        /* 测试页面 */
+        .test-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-progress {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .question-card {
+            background: var(--dark-light);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 35px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 18px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option-text {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .test-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .test-nav .btn {
+            flex: 1;
+            padding: 15px 30px;
+        }
+
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 20px;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+        }
+
+        .loading-tip {
+            font-size: 14px;
+            color: var(--text-dim);
+            opacity: 0.6;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        /* 结果页面 */
+        .result-header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .result-type {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+
+        .result-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .result-match {
+            font-size: 16px;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        .result-match strong {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .result-quote {
+            background: var(--dark-light);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 4px solid var(--primary);
+            font-style: italic;
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* 雷达图 */
+        .radar-section {
+            background: var(--dark-light);
+            border-radius: 24px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .radar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .radar-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+
+        .radar-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 维度详情 */
+        .dimensions-section {
+            margin: 30px 0;
+        }
+
+        .dimension-item {
+            background: var(--dark-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .dimension-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .dimension-score {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .dimension-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .dimension-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* 相似人格 */
+        .similar-section {
+            margin: 30px 0;
+        }
+
+        .similar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .similar-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 400px) {
+            .similar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .similar-card {
+            background: var(--dark-light);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .similar-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .similar-type {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .similar-name {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .similar-match {
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        /* 结果操作 */
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .result-actions .btn {
+            width: 100%;
+        }
+
+        /* 彩蛋弹窗 */
+        .easter-egg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .easter-egg-overlay.active {
+            display: flex;
+        }
+
+        .easter-egg-content {
+            background: var(--dark-light);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            text-align: center;
+            border: 2px solid var(--primary);
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .easter-egg-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .easter-egg-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .easter-egg-desc {
+            font-size: 16px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark-light);
+            color: var(--text);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="container">
+        <!-- 首页 -->
+        <div class="page active" id="homePage">
+            <div class="hero">
+                <div class="hero-badge">2026 全网爆火人格测试</div>
+                <h1>NISB</h1>
+                <p class="hero-subtitle">Not In Status Baby 人格测试</p>
+                <p class="hero-tagline">"你不是性格有问题，你只是 NISB。"</p>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">21</div>
+                        <div class="stat-label">道测试题目</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">种人格类型</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">大心理模型</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="startTest()">
+                    <span>开始测试</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+
+                <div class="types-preview">
+                    <h3>人格类型一览</h3>
+                    <div class="types-grid">
+                        <div class="type-chip">
+                            <div class="type-chip-name">ZZZ</div>
+                            <div class="type-chip-desc">装死专家</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">MALO</div>
+                            <div class="type-chip-desc">牛马打工人</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">CTRL</div>
+                            <div class="type-chip-desc">拿捏大师</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">ATM</div>
+                            <div class="type-chip-desc">人形ATM</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">IMSB</div>
+                            <div class="type-chip-desc">内耗之王</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">DEAD</div>
+                            <div class="type-chip-desc">已逝人士</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">JOKE</div>
+                            <div class="type-chip-desc">小丑本丑</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">BOSS</div>
+                            <div class="type-chip-desc">卷王本王</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">SOLO</div>
+                            <div class="type-chip-desc">孤独选手</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">THINK</div>
+                            <div class="type-chip-desc">想太多星人</div>
+                        </div>
+                        <div class="type-chip">
+                            <div class="type-chip-name">???</div>
+                            <div class="type-chip-desc">神秘人格</div>
+                        </div>
+                        <div class="type-chip" style="border-color: var(--accent);">
+                            <div class="type-chip-name" style="color: var(--accent);">DRUNK</div>
+                            <div class="type-chip-desc">隐藏酒鬼</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>NISB 人格测试 · 纯属娱乐 · 切勿当真</p>
+                <p>如有雷同，欢迎对号入座</p>
+            </div>
+        </div>
+
+        <!-- 测试页面 -->
+        <div class="page" id="testPage">
+            <div class="test-header">
+                <div class="test-progress">
+                    <div class="progress-text">题目 <span id="currentQ">1</span> / <span id="totalQ">21</span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">Q1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <div class="test-nav">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    上一题
+                </button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+                    下一题
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 加载页面 -->
+        <div class="page" id="loadingPage">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">正在分析你的灵魂<span class="loading-dots"></span></div>
+                <div class="loading-tip" id="loadingTip">你在人群中是哪种存在...</div>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="page" id="resultPage">
+            <div class="result-header">
+                <div class="result-badge">你的 NISB 人格是</div>
+                <div class="result-type" id="resultType"></div>
+                <div class="result-name" id="resultName"></div>
+                <div class="result-match">匹配度 <strong id="resultMatch"></strong></div>
+            </div>
+
+            <div class="result-quote" id="resultQuote"></div>
+
+            <div class="radar-section">
+                <div class="radar-title">五维人格雷达图</div>
+                <div class="radar-container">
+                    <canvas id="radarChart" class="radar-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="dimensions-section">
+                <div class="dimension-item">
+                    <div class="dimension-header">
+                        <span class="dimension-name">自我模型</span>
+                        <span class="dimension-score" id="selfScore"></span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-fill" id="selfFill" style="width: 0%"></div>
+                    </div>
+                    <div class="dimension-desc" id="selfDesc"></div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-header">
+                        <span class="dimension-name">情感模型</span>
+                        <span class="dimension-score" id="emotionScore"></span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-fill" id="emotionFill" style="width: 0%"></div>
+                    </div>
+                    <div class="dimension-desc" id="emotionDesc"></div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-header">
+                        <span class="dimension-name">态度模型</span>
+                        <span class="dimension-score" id="attitudeScore"></span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-fill" id="attitudeFill" style="width: 0%"></div>
+                    </div>
+                    <div class="dimension-desc" id="attitudeDesc"></div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-header">
+                        <span class="dimension-name">行动模型</span>
+                        <span class="dimension-score" id="actionScore"></span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-fill" id="actionFill" style="width: 0%"></div>
+                    </div>
+                    <div class="dimension-desc" id="actionDesc"></div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-header">
+                        <span class="dimension-name">社交模型</span>
+                        <span class="dimension-score" id="socialScore"></span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-fill" id="socialFill" style="width: 0%"></div>
+                    </div>
+                    <div class="dimension-desc" id="socialDesc"></div>
+                </div>
+            </div>
+
+            <div class="similar-section">
+                <div class="similar-title">你可能还喜欢</div>
+                <div class="similar-grid" id="similarGrid"></div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn btn-primary" onclick="shareResult()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                    分享结果
+                </button>
+                <button class="btn btn-secondary" onclick="restartTest()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                    再测一次
+                </button>
+                <button class="btn btn-glass" onclick="goHome()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    返回首页
+                </button>
+            </div>
+
+            <div class="footer">
+                <p>NISB 人格测试 · 纯属娱乐 · 切勿当真</p>
+                <p>如有雷同，欢迎对号入座</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彩蛋弹窗 -->
+    <div class="easter-egg-overlay" id="easterEggOverlay">
+        <div class="easter-egg-content">
+            <div class="easter-egg-icon" id="easterEggIcon"></div>
+            <div class="easter-egg-title" id="easterEggTitle"></div>
+            <div class="easter-egg-desc" id="easterEggDesc"></div>
+            <button class="btn btn-primary" onclick="closeEasterEgg()">继续探索</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 题目数据 ====================
+        const questions = [
+            {
+                id: 1,
+                text: "周末早上8点，你醒了但又没完全醒，你的选择是：",
+                options: [
+                    { text: "起床！新的一天新的开始！（flag已立）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: [] },
+                    { text: "再睡5分钟...再5分钟...已经下午2点了", scores: { self: 1, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["zzz"] },
+                    { text: "醒了但没起，躺着刷手机，这叫\"战略性充电\"", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["malo"] },
+                    { text: "根本不存在\"早上8点自然醒\"这个选项", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["zzz", "dead"] }
+                ]
+            },
+            {
+                id: 2,
+                text: "同事问你\"你觉得我今天有什么不一样吗？\"，你：",
+                options: [
+                    { text: "认真观察并回答（社交真诚度100%）", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["heal"] },
+                    { text: "说\"没有啊\"（省事省心）", scores: { self: 2, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["solo"] },
+                    { text: "说\"你今天...精神不错？\"（模糊敷衍）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["witch"] },
+                    { text: "反问\"你整容了？\"（开启地狱模式）", scores: { self: 3, emotion: 1, attitude: 1, action: 2, social: 2 }, tags: ["joke"] }
+                ]
+            },
+            {
+                id: 3,
+                text: "朋友找你帮忙，你其实很忙，但你会：",
+                options: [
+                    { text: "立刻答应，然后自己加班到凌晨", scores: { self: 1, emotion: 3, attitude: 2, action: 2, social: 3 }, tags: ["atm"] },
+                    { text: "犹豫半天最后还是答应了（嘴硬心软）", scores: { self: 2, emotion: 3, attitude: 2, action: 1, social: 2 }, tags: ["atm", "imsb"] },
+                    { text: "说\"不好意思我在忙\"然后心安理得玩手机", scores: { self: 3, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["ctrl"] },
+                    { text: "已读不回（最省事）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost"] }
+                ]
+            },
+            {
+                id: 4,
+                text: "地铁上有人插队到你前面，你：",
+                options: [
+                    { text: "大声说\"后面排队！\"（正义使者）", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["boss"] },
+                    { text: "内心骂街但表面沉默（怂）", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["imsb"] },
+                    { text: "跟着插进去（既然他能我也能）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["shit"] },
+                    { text: "假装没看见继续刷手机（别惹事）", scores: { self: 2, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ghost"] }
+                ]
+            },
+            {
+                id: 5,
+                text: "工作群里有同事发了错别字，你会：",
+                options: [
+                    { text: "立刻私信指出（维护团队形象）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["ctrl", "boss"] },
+                    { text: "当没看见，不想当出头鸟", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["npc"] },
+                    { text: "等别人说了再说（观望型）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think"] },
+                    { text: "在心里记下这个人的学历水平", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "shit"] }
+                ]
+            },
+            {
+                id: 6,
+                text: "中午吃什么，这个世纪难题你会：",
+                options: [
+                    { text: "快速决定从不纠结（今天就吃黄焖鸡）", scores: { self: 3, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["ctrl"] },
+                    { text: "打开大众点评刷30分钟", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["think", "imsb"] },
+                    { text: "等别人点好了跟着点", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["solo", "npc"] },
+                    { text: "不吃了，反正也不饿（省钱）", scores: { self: 1, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["poor", "dead"] }
+                ]
+            },
+            {
+                id: 7,
+                text: "暧昧对象已读不回3小时，你会：",
+                options: [
+                    { text: "再发一条\"在吗\"（焦虑型实锤）", scores: { self: 1, emotion: 3, attitude: 2, action: 2, social: 2 }, tags: ["imsb", "lover"] },
+                    { text: "该干嘛干嘛，反正我很忙（安全型）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["ctrl"] },
+                    { text: "删掉对话框假装没发过（回避型）", scores: { self: 2, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["ghost", "solo"] },
+                    { text: "发朋友圈暗示\"有些人已读不回\"（作死型）", scores: { self: 2, emotion: 2, attitude: 1, action: 2, social: 3 }, tags: ["joke", "witch"] }
+                ]
+            },
+            {
+                id: 8,
+                text: "被拉进一个新朋友的局，你通常会：",
+                options: [
+                    { text: "主动social，carry全场（社牛模式）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["boss", "joke"] },
+                    { text: "礼貌微笑，等待别人搭话", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["heal"] },
+                    { text: "找个角落玩手机，降低存在感", scores: { self: 1, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ghost", "solo"] },
+                    { text: "找个理由早点撤退（借口已备好）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost"] }
+                ]
+            },
+            {
+                id: 9,
+                text: "\"你觉得自己这辈子能实现阶层跨越吗？\"",
+                options: [
+                    { text: "当然可以！我命由我不由天！", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["boss", "ctrl"] },
+                    { text: "难说，但还是要努力一下", scores: { self: 2, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["think"] },
+                    { text: "笑死，阶层固化懂不懂", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 2 }, tags: ["shit", "dead"] },
+                    { text: "想这些干嘛，先把今天的班上完", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 1 }, tags: ["malo"] }
+                ]
+            },
+            {
+                id: 10,
+                text: "如果中了500万，你第一件事是：",
+                options: [
+                    { text: "辞职！老子不干了！", scores: { self: 3, emotion: 2, attitude: 1, action: 3, social: 2 }, tags: ["malo", "fuck"] },
+                    { text: "存银行吃利息，继续上班（稳定型）", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["ctrl", "think"] },
+                    { text: "给父母一半，自己留学去", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["heal"] },
+                    { text: "先还花呗，然后继续搬砖", scores: { self: 1, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["poor"] }
+                ]
+            },
+            {
+                id: 11,
+                text: "你加班是因为：",
+                options: [
+                    { text: "真的热爱工作（极少数）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["boss", "pro"] },
+                    { text: "责任心驱使，不做好睡不着", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["ctrl", "imsb"] },
+                    { text: "没办法，不加班活不下去", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["malo"] },
+                    { text: "其实也没什么事，就是不想回家", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "solo"] }
+                ]
+            },
+            {
+                id: 12,
+                text: "朋友跟你吐槽另一半，你会：",
+                options: [
+                    { text: "跟着骂，帮朋友出气", scores: { self: 2, emotion: 3, attitude: 2, action: 3, social: 3 }, tags: ["heal", "joke"] },
+                    { text: "理性分析，给出建议", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["think", "ctrl"] },
+                    { text: "安静倾听，偶尔点头", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["heal"] },
+                    { text: "默默记下，等他们分手后说\"我当时就说嘛\"", scores: { self: 2, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["witch", "shit"] }
+                ]
+            },
+            {
+                id: 13,
+                text: "你觉得大部分人是：",
+                options: [
+                    { text: "好人居多，愿意相信", scores: { self: 3, emotion: 3, attitude: 3, action: 2, social: 3 }, tags: ["heal"] },
+                    { text: "分情况，害人之心不可有防人之心不可无", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think"] },
+                    { text: "大部分人只在乎自己", scores: { self: 2, emotion: 1, attitude: 2, action: 2, social: 2 }, tags: ["ghost"] },
+                    { text: "人类悲观样本大赏", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["shit", "dead"] }
+                ]
+            },
+            {
+                id: 14,
+                text: "朋友找你借5000块，你会：",
+                options: [
+                    { text: "问都不问直接转（信任度拉满）", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 3 }, tags: ["atm", "heal"] },
+                    { text: "犹豫半天，最后还是借了（心软型）", scores: { self: 2, emotion: 3, attitude: 2, action: 1, social: 2 }, tags: ["atm", "imsb"] },
+                    { text: "说\"我也没钱\"然后默默打开基金账户", scores: { self: 3, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["poor", "ctrl"] },
+                    { text: "反手问他什么时候还上次借的200", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["witch", "shit"] }
+                ]
+            },
+            {
+                id: 15,
+                text: "\"你最讨厌自己的一点是：\"",
+                options: [
+                    { text: "三天三夜说不完（自我认知清晰但内耗）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think", "imsb"] },
+                    { text: "好像也没什么讨厌的（自我接纳度高）", scores: { self: 3, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["ctrl"] },
+                    { text: "说不上来，就是觉得自己不够好", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["imsb"] },
+                    { text: "我讨厌的地方多了，你自己挑一个", scores: { self: 2, emotion: 1, attitude: 1, action: 2, social: 2 }, tags: ["shit", "dead"] }
+                ]
+            },
+            {
+                id: 16,
+                text: "面对人生重大选择，你通常：",
+                options: [
+                    { text: "深思熟虑，把利弊写满一张纸", scores: { self: 3, emotion: 2, attitude: 3, action: 1, social: 2 }, tags: ["think", "ctrl"] },
+                    { text: "跟着感觉走，船到桥头自然直", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["chaos"] },
+                    { text: "问爸妈/朋友/算命的意见", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["solo", "npc"] },
+                    { text: "能逃避就逃避，等它自己解决", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["zzz", "dead"] }
+                ]
+            },
+            {
+                id: 17,
+                text: "亲戚问你\"谈对象了吗？工资多少？\"，你：",
+                options: [
+                    { text: "微笑礼貌回答（演技派）", scores: { self: 2, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["fake", "witch"] },
+                    { text: "反问\"您家孩子呢？\"（以攻为守）", scores: { self: 3, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["witch", "boss"] },
+                    { text: "直接说\"这是我的隐私\"", scores: { self: 3, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ctrl", "ghost"] },
+                    { text: "借口上厕所遁走", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost", "malo"] }
+                ]
+            },
+            {
+                id: 18,
+                text: "发朋友圈时，你会：",
+                options: [
+                    { text: "发最真实的日常，管你们怎么看", scores: { self: 3, emotion: 3, attitude: 3, action: 2, social: 3 }, tags: ["heal", "boss"] },
+                    { text: "精心挑选9图，修图2小时", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["fake"] },
+                    { text: "只发工作相关（立人设）", scores: { self: 2, emotion: 1, attitude: 2, action: 3, social: 2 }, tags: ["fake", "boss"] },
+                    { text: "从不发朋友圈（圈死人）", scores: { self: 2, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["ghost", "solo"] }
+                ]
+            },
+            {
+                id: 19,
+                text: "公司的流程很繁琐，你会：",
+                options: [
+                    { text: "严格遵守，绝不越雷池半步", scores: { self: 2, emotion: 2, attitude: 3, action: 1, social: 2 }, tags: ["npc", "think"] },
+                    { text: "能简化就简化，但要看起来合规", scores: { self: 3, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["ctrl", "boss"] },
+                    { text: "先斩后奏，做完再说", scores: { self: 3, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["boss", "fuck"] },
+                    { text: "流程是给老实人准备的", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["shit", "chaos"] }
+                ]
+            },
+            {
+                id: 20,
+                text: "别人夸你，你会：",
+                options: [
+                    { text: "谢谢，然后暗暗开心三天", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["heal"] },
+                    { text: "谦虚说\"哪里哪里\"", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["heal", "fake"] },
+                    { text: "觉得对方在客套（习惯性怀疑）", scores: { self: 1, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["imsb"] },
+                    { text: "立刻找自己的不足来抵消这份夸奖", scores: { self: 1, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["imsb", "dead"] }
+                ]
+            },
+            {
+                id: 21,
+                text: "你喝酒通常是因为：",
+                options: [
+                    { text: "喜欢酒的味道，品酒人士", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["chaos"] },
+                    { text: "场合需要，不喝不合群", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 3 }, tags: ["fake"] },
+                    { text: "只有喝酒的时候才觉得自己有点用", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["imsb", "dead", "drunk"] },
+                    { text: "压力大，借酒消愁", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "drunk", "shit"] }
+                ],
+                isEasterEgg: true
+            }
+        ];
+
+        // ==================== 人格类型数据 ====================
+        const personalityTypes = {
+            ZZZ: {
+                name: "装死专家",
+                description: "对世界大声说\"不\"，但对deadline说\"好的\"",
+                quote: "\"不是我想摆烂，是这个世界不配让我努力。\"",
+                traits: ["战略性摸鱼", "deadline驱动型", "已读不回专业户", "能躺着绝不坐着"],
+                self: "你是那种嘴上说着无所谓，心里却小剧场连轴转的人",
+                emotion: "你的感情模式是：能躲则躲，躲不了就装死",
+                attitude: "你的人生哲学是：差不多得了，别太认真",
+                action: "你的执行力是：DDL是第一生产力，没有DDL就没有伤害",
+                social: "你的社交模式是：线上话痨，线下哑巴"
+            },
+            MALO: {
+                name: "牛马打工人",
+                description: "天选牛马，命里缺钱，但精神在热带雨林",
+                quote: "\"我的灵魂在热带雨林荡秋千，我的肉体在公司敲键盘。\"",
+                traits: ["带薪蹲坑冠军", "周一综合征晚期", "工资到手还花呗", "精神状态be like周末才活着"],
+                self: "你是那种清醒地知道自己不想上班，但还是会准时打卡的人",
+                emotion: "你对感情的态度：等我有空了再谈恋爱（永远没空）",
+                attitude: "你的世界观：上班就是为了下班，周末才是真正的人生",
+                action: "你的执行力：周一到周五浑水摸鱼，周六周日疯狂补觉",
+                social: "你的社交：同事就是同事，不可能的变成朋友的"
+            },
+            CTRL: {
+                name: "拿捏大师",
+                description: "掌控一切，除了体重和发际线",
+                quote: "\"我不是卷王，我只是不喜欢失控的感觉。\"",
+                traits: ["计划表狂魔", "时间管理大师", "细节控本控", "永远有Plan B"],
+                self: "你是那种出门旅游都要做50页攻略的人，生活在你手里被安排得明明白白",
+                emotion: "你的感情模式是：一切都得按计划来，包括什么时候心动",
+                attitude: "你的世界观：凡事预则立，不预则废",
+                action: "你的执行力：说几点就几点，迟到一分钟都是罪过",
+                social: "你的社交：朋友里的话事人，大家有事都找你商量"
+            },
+            ATM: {
+                name: "人形ATM",
+                description: "付出型人格，支付宝到账永远响的不是自己的",
+                quote: "\"没事没事，我来付。你们玩得开心就好。\"",
+                traits: ["钱包永远为他人敞开", "不好意思拒绝人", "请客专业户", "自己的需求永远放最后"],
+                self: "你是那种宁愿委屈自己也要让别人舒服的人，讨好型人格本格",
+                emotion: "你对感情的态度：全身心投入，不留余地，经常被发好人卡",
+                attitude: "你的世界观：付出就会有回报（真的吗？）",
+                action: "你的执行力：别人的事比自己的事重要，永远先顾别人",
+                social: "你的社交：朋友圈里的老好人，有事第一个冲，没事最后才想到"
+            },
+            IMSB: {
+                name: "内耗之王",
+                description: "精神状态：没事没事没事有事有事没事",
+                quote: "\"我是不是说错话了？他怎么不回我了？是不是我哪里做得不好？\"",
+                traits: ["想太多本多", "自我反省大师", "敏感体质", "容易emo"],
+                self: "你是那种发消息要犹豫半小时，发完还要后悔的人，想太多是刻在DNA里的",
+                emotion: "你的感情模式：想靠近又怕被拒绝，想放手又舍不得",
+                attitude: "你的世界观：每天都在自我怀疑和自我肯定之间反复横跳",
+                action: "你的执行力：还没开始行动就已经在脑内演了八百集连续剧",
+                social: "你的社交：小心翼翼维护关系，生怕说错一句话"
+            },
+            DEAD: {
+                name: "已逝人士",
+                description: "肉体还在呼吸，灵魂早已圆寂",
+                quote: "\"周一：不想活 周二：不想活 周三：不想活 周四：还是算了\"",
+                traits: ["行尸走肉本走", "对一切失去兴趣", "间歇性想死持续性想躺", "没有快乐也没有悲伤"],
+                self: "你是那种对生活失去热情，看什么都淡淡的，活着就是为了活着",
+                emotion: "你的感情状态：爱咋咋地，反正最后都会失望",
+                attitude: "你的世界观：人生就是一场大型无聊真人秀",
+                action: "你的执行力：能不动就不动，动也是被逼的",
+                social: "你的社交：朋友约不动，社交没兴趣，一个人挺好"
+            },
+            JOKE: {
+                name: "小丑本丑",
+                description: "气氛组组长，自己的笑话自己买单",
+                quote: "\"大家开心就好，我笑着笑着就习惯了。\"",
+                traits: ["社交润滑剂", "冷场终结者", "用玩笑掩饰尴尬", "所有人的树洞"],
+                self: "你是那种用笑容掩盖一切的人，看起来永远开心，其实只是不想让别人担心",
+                emotion: "你的感情模式：越在乎越要装作不在乎，用玩笑试探真心",
+                attitude: "你的世界观：与其让大家尴尬，不如让我来搞笑",
+                action: "你的执行力：答应别人的事从不食言，除了自己的事",
+                social: "你的社交：朋友很多，知心很少，大家都觉得你没烦恼"
+            },
+            BOSS: {
+                name: "卷王本王",
+                description: "不是我卷，是你们太菜",
+                quote: "\"你不卷你怎么知道自己有多强？早上5点起来跑个步不过分吧？\"",
+                traits: ["工作狂本狂", "自律到变态", "效率怪物", "永远在学习"],
+                self: "你是那种把别人用来休息的时间都用来提升自己的人，自律是你的标签",
+                emotion: "你的感情模式：没时间谈恋爱，工作就是我的爱人",
+                attitude: "你的世界观：优秀是一种习惯，躺平是对生命的浪费",
+                action: "你的执行力：想到就做，从不拖延，永远比别人快一步",
+                social: "你的社交：圈子很小，社交都是功能性社交"
+            },
+            SOLO: {
+                name: "孤独选手",
+                description: "一个人吃饭一个人看电影一个人过双十一",
+                quote: "\"一个人挺好，只是有时候会有点...好吧其实一直都有点。\"",
+                traits: ["独居达人", "电影搭子=自己", "外卖只点一人份", "习惯性单身"],
+                self: "你是那种已经习惯一个人生活，偶尔羡慕情侣，大多时候庆幸自由",
+                emotion: "你的感情状态：间歇性想谈恋爱，持续性享受单身",
+                attitude: "你的世界观：低质量的社交不如高质量的独处",
+                action: "你的执行力：一个人的事，能拖就拖，反正也没人管",
+                social: "你的社交：朋友不多，但每一个都是真朋友"
+            },
+            THINK: {
+                name: "想太多星人",
+                description: "一件事想三天，一个选择分析八种后果",
+                quote: "\"这个方案...我觉得可能...但是...万一...所以...还是再想想吧\"",
+                traits: ["选择困难症", "纠结本纠", "计划赶不上变化", "三思而后行"],
+                self: "你是那种买件衣服都要纠结颜色款式价格的人，想太多已经成了本能",
+                emotion: "你的感情模式：还没开始就已经想到了分手后的场景",
+                attitude: "你的世界观：任何决定都要深思熟虑，冲动的决定一定会后悔",
+                action: "你的执行力：想得多做得少，完美主义晚期患者",
+                social: "你的社交：害怕冲突，经常妥协，只想维持peace"
+            },
+            GHOST: {
+                name: "幽灵社恐",
+                description: "可以在线活跃三天不下线，见面讲话结巴三天",
+                quote: "\"网上：话痨本痨 线下：哑巴本哑\"",
+                traits: ["社交恐惧症", "打字如飞见面死机", "能不见面就不见面", "线上社牛线下社恐"],
+                self: "你是那种在网络上重拳出击，现实中唯唯诺诺的人，屏幕给了你勇气",
+                emotion: "你的感情模式：暗恋都是网恋，见面就怂",
+                attitude: "你的世界观：社交是一件消耗能量的事，独处才是充电",
+                action: "你的执行力：线上任务准时完成，线下邀约永远有事",
+                social: "你的社交：朋友都在网上，线下零社交"
+            },
+            NPC: {
+                name: "路人甲",
+                description: "没有主角光环，没有台词，没有人在乎",
+                quote: "\"存在感这种东西，我好像从来没有过...\"",
+                traits: ["背景板本板", "容易被遗忘", "随大流", "低调到尘埃里"],
+                self: "你是那种在人群中会自动隐身的人，不争不抢，没有存在感",
+                emotion: "你的感情状态：被喜欢的人注意不到，喜欢你的人找不到你",
+                attitude: "你的世界观：平凡也是一种幸福（虽然有时候挺不甘心的）",
+                action: "你的执行力：跟着大部队走，不领先也不落后",
+                social: "你的社交：朋友不少，但都是泛泛之交"
+            },
+            WITCH: {
+                name: "阴阳大师",
+                description: "表面\"好的呢\"，内心\"MMP\"",
+                quote: "\"好的呢亲～（内心：滚）\"",
+                traits: ["表面功夫满分", "内心戏丰富", "阴阳怪气本气", "嘴甜心狠"],
+                self: "你是那种表面笑嘻嘻，背后MMP的人，情绪管理能力满分",
+                emotion: "你的感情模式：嘴上说不在乎，心里门儿清",
+                attitude: "你的世界观：做人嘛，最重要的是开心（假的）",
+                action: "你的执行力：能拖就拖，反正表面功夫要做好",
+                social: "你的社交：人缘不差，因为没人知道你真实想法"
+            },
+            FAKE: {
+                name: "人设表演艺术家",
+                description: "三分演七分装，三秒不演浑身难受",
+                quote: "\"今天的人设是：积极向上的打工人。请为我鼓掌。\"",
+                traits: ["人设达人", "精分选手", "每条朋友圈都是精心策划", "活在别人的眼光里"],
+                self: "你是那种活在他人期待中的人，永远在表演最完美的自己",
+                emotion: "你的感情状态：不确定自己的感觉是真的还是演的",
+                attitude: "你的世界观：人设不能崩，形象很重要",
+                action: "你的执行力：形象管理比实际工作还重要",
+                social: "你的社交：朋友很多，但不知道有多少是真朋友"
+            },
+            POOR: {
+                name: "穷鬼本鬼",
+                description: "不是不努力，是钱总在奇怪的地方消失",
+                quote: "\"工资发下来-还花呗-还信用卡-钱包：你好，我是你的钱包，空的\"",
+                traits: ["月光族本族", "理财绝缘体", "总在哭穷", "花呗永久居民"],
+                self: "你是那种永远不知道自己钱花哪了，但就是没钱的人",
+                emotion: "你的感情态度：穷都不怕还怕失恋？（其实还是怕的）",
+                attitude: "你的世界观：钱不是万能的，但没有钱是万万不能的",
+                action: "你的执行力：省钱的时候执行力最强，其他时候随缘",
+                social: "你的社交：聚会能推就推，毕竟AA也要钱"
+            },
+            HEAL: {
+                name: "治愈系天使",
+                description: "朋友哭他递纸，朋友笑他买单",
+                quote: "\"没关系，我在这里。\"",
+                traits: ["最佳倾听者", "情绪稳定大师", "默默付出", "朋友们的避风港"],
+                self: "你是那种总是照顾别人情绪的人，温暖是刻在骨子里的",
+                emotion: "你的感情模式：付出型爱情，被伤害了还是会原谅",
+                attitude: "你的世界观：世界以痛吻我，我要报之以歌",
+                action: "你的执行力：答应别人的事一定做到，自己的事往后排",
+                social: "你的社交：朋友圈里的情感导师，自己的问题却不知道怎么解决"
+            },
+            DRUNK: {
+                name: "酒鬼",
+                description: "何以解忧？唯有杜康",
+                quote: "\"我没醉，我只是进入了另一种清醒状态。\"",
+                traits: ["借酒消愁", "酒后吐真言", "酒量不行酒胆大", "戒酒宣言永远在下周一"],
+                self: "你是那种需要酒精才能放松的人，酒是你逃避现实的工具",
+                emotion: "你的感情状态：清醒时说不出口的话，酒后全倒出来",
+                attitude: "你的世界观：人生太苦，不如喝酒",
+                action: "你的执行力：喝完酒第二天肯定废，一天都缓不过来",
+                social: "你的社交：酒桌上的朋友多，真心的朋友少"
+            },
+            CHAOS: {
+                name: "混沌使者",
+                description: "随机摇摆，看心情",
+                quote: "\"我也不知道我下一秒会怎样，包括我自己。\"",
+                traits: ["不稳定本定", "阴晴不定", "随机事件发生器", "自己都捉摸不透自己"],
+                self: "你是那种连自己都搞不懂自己的人，情绪和决定都看心情",
+                emotion: "你的感情模式：今天爱你明天可能就不爱了，不变的是一直在变",
+                attitude: "你的世界观：计划赶不上变化，变化赶不上心情",
+                action: "你的执行力：看情况，今天可能很勤快，明天可能躺一天",
+                social: "你的社交：朋友对你的评价永远是\"这人不好说\""
+            },
+            GOD: {
+                name: "全能之神",
+                description: "全方位优秀，极度稀有物种",
+                quote: "\"你们在卷什么？不是有手就行吗？\"",
+                traits: ["六边形战士", "全能选手", "别人家的孩子", "稀有SSR"],
+                self: "你是那种做什么都能做好的人，开挂般的人生不需要解释",
+                emotion: "你的感情状态：追求者众多，但你觉得都不太行",
+                attitude: "你的世界观：只要我想，没有做不到的事",
+                action: "你的执行力：自律即自由，执行力拉满到可怕",
+                social: "你的社交：高处不胜寒，普通人理解不了你"
+            },
+            RICH: {
+                name: "财神",
+                description: "有钱任性，任性有钱",
+                quote: "\"能用钱解决的问题都不是问题，解决不了的就是我不够有钱。\"",
+                traits: ["钞能力者", "不差钱", "理财达人", "钱生钱高手"],
+                self: "你是那种对钱有天赋的人，财商和收入都让别人望尘莫及",
+                emotion: "你的感情态度：爱情需要面包，你的面包够大所以选择很多",
+                attitude: "你的世界观：钱不是万能的，但确实能解决大部分问题",
+                action: "你的执行力：赚钱的时候执行力爆棚，其他时候一般般",
+                social: "你的社交：圈子不同不相为谋，社交也是投资"
+            },
+            LOVER: {
+                name: "恋爱脑",
+                description: "爱情是我的全部，我是爱情的一部分",
+                quote: "\"我可以单身，但我嗑的CP必须在一起。\"",
+                traits: ["爱情至上", "容易上头", "为爱痴狂", "偶像剧看多了"],
+                self: "你是那种一恋爱就上头的人，爱情是生活的全部意义",
+                emotion: "你的感情状态：全身心投入，掏心掏肺，容易受伤但下次还敢",
+                attitude: "你的世界观：有爱万事足，没爱活不了",
+                action: "你的执行力：恋爱时智商为零，决策全看对方喜好",
+                social: "你的社交：朋友都要靠边站，男朋友/女朋友才是第一位"
+            },
+            PRO: {
+                name: "执行力怪物",
+                description: "想到就做，从不拖延",
+                quote: "\"想太多是浪费时间，做就完了。\"",
+                traits: ["行动派本派", "雷厉风行", "拖延症绝缘体", "效率天花板"],
+                self: "你是那种决定了就立刻执行的人，拖延这个词不存在于你的字典",
+                emotion: "你的感情态度：喜欢就追，不墨迹，不行就换",
+                attitude: "你的世界观：想都是问题，做才是答案",
+                action: "你的执行力：执行力100分，想象力0分，想太少有时候也会踩坑",
+                social: "你的社交：高效社交，不废话，不废话"
+            },
+            EDGE: {
+                name: "边缘行者",
+                description: "游离于所有群体之外",
+                quote: "\"我不属于任何圈子，我就是我自己。\"",
+                traits: ["独来独往", "格格不入", "小众爱好者", "酷到没朋友"],
+                self: "你是那种不愿意被贴标签的人，追求独特，不随大流",
+                emotion: "你的感情态度：宁缺毋滥，没有合适的宁愿单身",
+                attitude: "你的世界观：圈子不同不必强融，做自己就好",
+                action: "你的执行力：按自己的节奏来，不被任何人催促",
+                social: "你的社交：朋友很少，但每一个都是精挑细选的"
+            },
+            "???": {
+                name: "神秘人格",
+                description: "测出的人自己都不知道自己是什么",
+                quote: "\"我也不知道我是什么，你们猜吧。\"",
+                traits: ["多重人格", "人格分裂", "时而是A时而是B", "自己也搞不懂自己"],
+                self: "你是那种连自己都搞不懂的人，今天和明天可能是完全不同的两个人",
+                emotion: "你的感情状态：时冷时热，让人捉摸不透",
+                attitude: "你的世界观：存在本身就是一种矛盾",
+                action: "你的执行力：看心情，看天气，看运气",
+                social: "你的社交：时而社牛时而社恐，没有人能真正了解你"
+            }
+        };
+
+        // ==================== 状态管理 ====================
+        let currentQuestion = 0;
+        let answers = [];
+        let userScores = { self: 0, emotion: 0, attitude: 0, action: 0, social: 0 };
+        let tagCounts = {};
+        let drunkTriggered = false;
+        let alcoholOptions = 0;
+
+        // ==================== 页面切换 ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // ==================== 测试逻辑 ====================
+        function startTest() {
+            currentQuestion = 0;
+            answers = [];
+            userScores = { self: 0, emotion: 0, attitude: 0, action: 0, social: 0 };
+            tagCounts = {};
+            drunkTriggered = false;
+            alcoholOptions = 0;
+            showPage('testPage');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('totalQ').textContent = questions.length;
+            document.getElementById('progressFill').style.width = ((currentQuestion) / questions.length * 100) + '%';
+            document.getElementById('questionNumber').textContent = 'Q' + (currentQuestion + 1);
+            document.getElementById('questionText').textContent = q.text;
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, index) => {
+                const div = document.createElement('div');
+                div.className = 'option' + (answers[currentQuestion] === index ? ' selected' : '');
+                div.innerHTML = `
+                    <span class="option-letter">${letters[index]}</span>
+                    <span class="option-text">${opt.text}</span>
+                `;
+                div.onclick = () => selectOption(index);
+                container.appendChild(div);
+            });
+
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'flex' : 'none';
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? '查看结果' : '下一题';
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+            document.getElementById('nextBtn').innerHTML = (currentQuestion === questions.length - 1 ? '查看结果' : '下一题') + `
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>`;
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            const q = questions[currentQuestion];
+            const selectedOption = q.options[index];
+
+            // 累加分数
+            userScores.self += selectedOption.scores.self;
+            userScores.emotion += selectedOption.scores.emotion;
+            userScores.attitude += selectedOption.scores.attitude;
+            userScores.action += selectedOption.scores.action;
+            userScores.social += selectedOption.scores.social;
+
+            // 统计标签
+            selectedOption.tags.forEach(tag => {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            });
+
+            // 检查酒鬼彩蛋
+            if (q.isEasterEgg && (index === 2 || index === 3)) {
+                alcoholOptions++;
+            }
+
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // 撤销上一题的分数
+                if (answers[currentQuestion - 1] !== undefined) {
+                    const prevQ = questions[currentQuestion - 1];
+                    const prevOption = prevQ.options[answers[currentQuestion - 1]];
+                    userScores.self -= prevOption.scores.self;
+                    userScores.emotion -= prevOption.scores.emotion;
+                    userScores.attitude -= prevOption.scores.attitude;
+                    userScores.action -= prevOption.scores.action;
+                    userScores.social -= prevOption.scores.social;
+
+                    prevOption.tags.forEach(tag => {
+                        tagCounts[tag] = (tagCounts[tag] || 1) - 1;
+                        if (tagCounts[tag] <= 0) delete tagCounts[tag];
+                    });
+                }
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) {
+                showToast('请选择一个选项');
+                return;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                // 完成测试，显示加载
+                showPage('loadingPage');
+
+                // 检查酒鬼彩蛋
+                if (alcoholOptions >= 2) {
+                    drunkTriggered = true;
+                }
+
+                // 显示加载提示
+                const tips = [
+                    '分析你的灵魂组成...',
+                    '计算你的发疯指数...',
+                    '匹配你的抽象人格...',
+                    '挖掘你的隐藏属性...',
+                    '生成你的人格报告...',
+                    '你在人群中是哪种存在...'
+                ];
+                let tipIndex = 0;
+                const loadingTip = document.getElementById('loadingTip');
+                const tipInterval = setInterval(() => {
+                    tipIndex = (tipIndex + 1) % tips.length;
+                    loadingTip.textContent = tips[tipIndex];
+                }, 800);
+
+                setTimeout(() => {
+                    clearInterval(tipInterval);
+                    calculateResult();
+                }, 2500);
+            }
+        }
+
+        // ==================== 结果计算 ====================
+        function calculateResult() {
+            const result = matchPersonality();
+
+            // 显示结果
+            showPage('resultPage');
+            document.getElementById('resultType').textContent = result.type;
+            document.getElementById('resultName').textContent = result.name;
+            document.getElementById('resultMatch').textContent = result.matchRate + '%';
+            document.getElementById('resultQuote').textContent = result.quote;
+
+            // 五维模型评分
+            const totalPossible = questions.length * 3; // 每维度最高3分
+            const selfPercent = Math.round(userScores.self / totalPossible * 100);
+            const emotionPercent = Math.round(userScores.emotion / totalPossible * 100);
+            const attitudePercent = Math.round(userScores.attitude / totalPossible * 100);
+            const actionPercent = Math.round(userScores.action / totalPossible * 100);
+            const socialPercent = Math.round(userScores.social / totalPossible * 100);
+
+            setTimeout(() => {
+                document.getElementById('selfScore').textContent = selfPercent + '%';
+                document.getElementById('selfFill').style.width = selfPercent + '%';
+                document.getElementById('selfDesc').textContent = result.self;
+
+                document.getElementById('emotionScore').textContent = emotionPercent + '%';
+                document.getElementById('emotionFill').style.width = emotionPercent + '%';
+                document.getElementById('emotionDesc').textContent = result.emotion;
+
+                document.getElementById('attitudeScore').textContent = attitudePercent + '%';
+                document.getElementById('attitudeFill').style.width = attitudePercent + '%';
+                document.getElementById('attitudeDesc').textContent = result.attitude;
+
+                document.getElementById('actionScore').textContent = actionPercent + '%';
+                document.getElementById('actionFill').style.width = actionPercent + '%';
+                document.getElementById('actionDesc').textContent = result.action;
+
+                document.getElementById('socialScore').textContent = socialPercent + '%';
+                document.getElementById('socialFill').style.width = socialPercent + '%';
+                document.getElementById('socialDesc').textContent = result.social;
+
+                // 绘制雷达图
+                drawRadarChart(selfPercent, emotionPercent, attitudePercent, actionPercent, socialPercent);
+
+                // 显示相似人格
+                renderSimilarTypes(result.type);
+            }, 100);
+
+            // 检查彩蛋
+            if (drunkTriggered) {
+                setTimeout(() => {
+                    showEasterEgg('DRUNK');
+                }, 1500);
+            }
+        }
+
+        function matchPersonality() {
+            const type = personalityTypes;
+
+            // 计算总得分
+            const total = userScores.self + userScores.emotion + userScores.attitude + userScores.action + userScores.social;
+            const maxTotal = questions.length * 3 * 5;
+            const avgPercent = (total / maxTotal) * 100;
+
+            // 计算各维度均衡性
+            const scores = [userScores.self, userScores.emotion, userScores.attitude, userScores.action, userScores.social];
+            const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+            const variance = scores.reduce((sum, s) => sum + Math.pow(s - avg, 2), 0) / scores.length;
+            const isChaotic = variance > 200; // 维度差异大
+
+            // 检查标签匹配
+            let bestMatch = null;
+            let bestScore = 0;
+
+            // 优先检查隐藏人格
+            if (drunkTriggered && alcoholOptions >= 2) {
+                return {
+                    type: 'DRUNK',
+                    name: type.DRUNK.name,
+                    quote: type.DRUNK.quote,
+                    matchRate: 88 + Math.floor(Math.random() * 10),
+                    self: type.DRUNK.self,
+                    emotion: type.DRUNK.emotion,
+                    attitude: type.DRUNK.attitude,
+                    action: type.DRUNK.action,
+                    social: type.DRUNK.social
+                };
+            }
+
+            if (tagCounts['poor'] >= 3) {
+                return {
+                    type: 'POOR',
+                    name: type.POOR.name,
+                    quote: type.POOR.quote,
+                    matchRate: 82 + Math.floor(Math.random() * 12),
+                    self: type.POOR.self,
+                    emotion: type.POOR.emotion,
+                    attitude: type.POOR.attitude,
+                    action: type.POOR.action,
+                    social: type.POOR.social
+                };
+            }
+
+            if (tagCounts['boss'] >= 4 && avgPercent > 60) {
+                return {
+                    type: 'BOSS',
+                    name: type.BOSS.name,
+                    quote: type.BOSS.quote,
+                    matchRate: 85 + Math.floor(Math.random() * 10),
+                    self: type.BOSS.self,
+                    emotion: type.BOSS.emotion,
+                    attitude: type.BOSS.attitude,
+                    action: type.BOSS.action,
+                    social: type.BOSS.social
+                };
+            }
+
+            if (tagCounts['ctrl'] >= 4) {
+                return {
+                    type: 'CTRL',
+                    name: type.CTRL.name,
+                    quote: type.CTRL.quote,
+                    matchRate: 83 + Math.floor(Math.random() * 12),
+                    self: type.CTRL.self,
+                    emotion: type.CTRL.emotion,
+                    attitude: type.CTRL.attitude,
+                    action: type.CTRL.action,
+                    social: type.CTRL.social
+                };
+            }
+
+            // 根据标签统计判断人格
+            const tagPriority = [
+                ['zzz', 'ZZZ', type.ZZZ],
+                ['dead', 'DEAD', type.DEAD],
+                ['malo', 'MALO', type.MALO],
+                ['imsb', 'IMSB', type.IMSB],
+                ['atm', 'ATM', type.ATM],
+                ['joke', 'JOKE', type.JOKE],
+                ['heal', 'HEAL', type.HEAL],
+                ['think', 'THINK', type.THINK],
+                ['ghost', 'GHOST', type.GHOST],
+                ['solo', 'SOLO', type.SOLO],
+                ['shit', 'SHIT', type.NPC], // 用NPC代替SHIT
+                ['witch', 'WITCH', type.WITCH],
+                ['fake', 'FAKE', type.FAKE],
+                ['npc', 'NPC', type.NPC],
+                ['chaos', 'CHAOS', type.CHAOS]
+            ];
+
+            let topTag = null;
+            let topCount = 0;
+            tagPriority.forEach(([tag, typeKey, typeData]) => {
+                if ((tagCounts[tag] || 0) > topCount) {
+                    topCount = tagCounts[tag];
+                    topTag = [typeKey, typeData];
+                }
+            });
+
+            if (topTag && topCount >= 2) {
+                const matchRate = Math.min(95, 70 + topCount * 8 + Math.floor(Math.random() * 10));
+                return {
+                    type: topTag[0],
+                    name: topTag[1].name,
+                    quote: topTag[1].quote,
+                    matchRate: matchRate,
+                    self: topTag[1].self,
+                    emotion: topTag[1].emotion,
+                    attitude: topTag[1].attitude,
+                    action: topTag[1].action,
+                    social: topTag[1].social
+                };
+            }
+
+            // 根据五维模型综合判断
+            if (isChaotic || avgPercent < 40) {
+                if (avgPercent > 30) {
+                    return {
+                        type: '???',
+                        name: type['???'].name,
+                        quote: type['???'].quote,
+                        matchRate: 75 + Math.floor(Math.random() * 10),
+                        self: type['???'].self,
+                        emotion: type['???'].emotion,
+                        attitude: type['???'].attitude,
+                        action: type['???'].action,
+                        social: type['???'].social
+                    };
+                }
+                return {
+                    type: 'DEAD',
+                    name: type.DEAD.name,
+                    quote: type.DEAD.quote,
+                    matchRate: 78 + Math.floor(Math.random() * 10),
+                    self: type.DEAD.self,
+                    emotion: type.DEAD.emotion,
+                    attitude: type.DEAD.attitude,
+                    action: type.DEAD.action,
+                    social: type.DEAD.social
+                };
+            }
+
+            if (avgPercent > 75) {
+                return {
+                    type: 'GOD',
+                    name: type.GOD.name,
+                    quote: type.GOD.quote,
+                    matchRate: 80 + Math.floor(Math.random() * 15),
+                    self: type.GOD.self,
+                    emotion: type.GOD.emotion,
+                    attitude: type.GOD.attitude,
+                    action: type.GOD.action,
+                    social: type.GOD.social
+                };
+            }
+
+            // 默认基于得分最高的维度
+            const maxDim = Object.entries(userScores).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+            const dimMap = {
+                'self': ['CTRL', type.CTRL],
+                'emotion': ['ATM', type.ATM],
+                'attitude': ['BOSS', type.BOSS],
+                'action': ['PRO', type.PRO],
+                'social': ['JOKE', type.JOKE]
+            };
+
+            const defaultType = dimMap[maxDim] || ['MALO', type.MALO];
+            return {
+                type: defaultType[0],
+                name: defaultType[1].name,
+                quote: defaultType[1].quote,
+                matchRate: 72 + Math.floor(Math.random() * 15),
+                self: defaultType[1].self,
+                emotion: defaultType[1].emotion,
+                attitude: defaultType[1].attitude,
+                action: defaultType[1].action,
+                social: defaultType[1].social
+            };
+        }
+
+        // ==================== 雷达图 ====================
+        function drawRadarChart(self, emotion, attitude, action, social) {
+            const canvas = document.getElementById('radarChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = 140;
+            const centerY = 140;
+            const radius = 100;
+
+            canvas.width = 280;
+            canvas.height = 280;
+
+            ctx.clearRect(0, 0, 280, 280);
+
+            const labels = ['自我', '情感', '态度', '行动', '社交'];
+            const values = [self, emotion, attitude, action, social];
+            const numPoints = 5;
+            const angleStep = (Math.PI * 2) / numPoints;
+
+            // 绘制背景网格
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+
+            for (let level = 1; level <= 4; level++) {
+                const levelRadius = (radius / 4) * level;
+                ctx.beginPath();
+                for (let i = 0; i <= numPoints; i++) {
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * levelRadius;
+                    const y = centerY + Math.sin(angle) * levelRadius;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+
+            // 绘制轴线
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
+                ctx.stroke();
+            }
+
+            // 绘制数据区域
+            const gradient = ctx.createLinearGradient(0, 0, 280, 280);
+            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.8)');
+            gradient.addColorStop(1, 'rgba(240, 147, 251, 0.8)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+
+            for (let i = 0; i <= numPoints; i++) {
+                const index = i % numPoints;
+                const angle = index * angleStep - Math.PI / 2;
+                const value = (values[index] / 100) * radius;
+                const x = centerX + Math.cos(angle) * value;
+                const y = centerY + Math.sin(angle) * value;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // 绘制数据点
+            ctx.fillStyle = '#fff';
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const value = (values[i] / 100) * radius;
+                const x = centerX + Math.cos(angle) * value;
+                const y = centerY + Math.sin(angle) * value;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 绘制标签
+            ctx.fillStyle = '#e4e4e7';
+            ctx.font = '12px PingFang SC';
+            ctx.textAlign = 'center';
+
+            for (let i = 0; i < numPoints; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const labelRadius = radius + 25;
+                const x = centerX + Math.cos(angle) * labelRadius;
+                const y = centerY + Math.sin(angle) * labelRadius;
+                ctx.fillText(labels[i], x, y);
+            }
+        }
+
+        // ==================== 相似人格 ====================
+        function renderSimilarTypes(mainType) {
+            const grid = document.getElementById('similarGrid');
+            grid.innerHTML = '';
+
+            const typeOrder = Object.keys(personalityTypes);
+            const mainIndex = typeOrder.indexOf(mainType);
+
+            // 获取主类型附近的几个人格
+            const similar = [];
+            const offsets = [-2, -1, 1, 2];
+            offsets.forEach(offset => {
+                let idx = mainIndex + offset;
+                if (idx < 0) idx = typeOrder.length + idx;
+                if (idx >= typeOrder.length) idx = idx - typeOrder.length;
+                if (typeOrder[idx] !== mainType && !['DRUNK', 'RICH', 'GOD', 'LOVER', 'PRO', 'EDGE'].includes(typeOrder[idx])) {
+                    similar.push({
+                        type: typeOrder[idx],
+                        name: personalityTypes[typeOrder[idx]].name,
+                        match: 60 + Math.floor(Math.random() * 20)
+                    });
+                }
+            });
+
+            similar.slice(0, 4).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'similar-card';
+                div.innerHTML = `
+                    <div class="similar-type">${item.type}</div>
+                    <div class="similar-name">${item.name}</div>
+                    <div class="similar-match">相似度 ${item.match}%</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // ==================== 彩蛋 ====================
+        function showEasterEgg(type) {
+            const egg = personalityTypes[type];
+            document.getElementById('easterEggIcon').textContent = type === 'DRUNK' ? '🍺' : '🎉';
+            document.getElementById('easterEggTitle').textContent = `隐藏人格解锁：${type}`;
+            document.getElementById('easterEggDesc').textContent = egg.quote;
+            document.getElementById('easterEggOverlay').classList.add('active');
+        }
+
+        function closeEasterEgg() {
+            document.getElementById('easterEggOverlay').classList.remove('active');
+        }
+
+        // ==================== 分享 ====================
+        function shareResult() {
+            const resultType = document.getElementById('resultType').textContent;
+            const resultName = document.getElementById('resultName').textContent;
+            const resultMatch = document.getElementById('resultMatch').textContent;
+
+            const shareText = `我的 NISB 人格是【${resultType} ${resultName}】，匹配度 ${resultMatch}\n\n"你不是性格有问题，你只是 NISB。"\n\n👉 点击测试你的 NISB 人格`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'NISB 人格测试',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                // 复制到剪贴板
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('结果已复制到剪贴板，快去分享吧！');
+                }).catch(() => {
+                    showToast('分享功能暂不可用，请手动复制结果');
+                });
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function restartTest() {
+            startTest();
+        }
+
+        function goHome() {
+            showPage('homePage');
+        }
+
+        // ==================== 背景动画 ====================
+        function initBackground() {
+            const bg = document.getElementById('bgAnimation');
+            const emojis = ['🧠', '💀', '👻', '🎭', '💫', '✨', '🔮', '💭', '🎪', '🃏'];
+
+            for (let i = 0; i < 15; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'floating-emoji';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = Math.random() * 100 + '%';
+                emoji.style.top = Math.random() * 100 + '%';
+                emoji.style.animationDelay = Math.random() * 15 + 's';
+                emoji.style.animationDuration = (15 + Math.random() * 10) + 's';
+                bg.appendChild(emoji);
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initBackground();
+        });
+    </script>
+</body>
+</html>
