@@ -82,6 +82,7 @@
             display: none;
             animation: fadeIn 0.5s ease;
         }
+        .page { display: none; }
         .page.active { display: block; }
 
         @keyframes fadeIn {
@@ -1374,18 +1375,33 @@
 
     // ==================== 页面切换 ====================
     function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        try {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+                pages[i].style.display = 'none';
+            }
+            var target = document.getElementById(id);
+            if (target) {
+                target.style.display = 'block';
+                target.classList.add('active');
+            }
+        } catch(e) { console.error('showPage error:', e); }
     }
 
     // ==================== 测试逻辑 ====================
     function startTest() {
-        currentQuestion = 0; answers = [];
-        userScores = {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0};
-        tagCounts = {}; drunkTriggered = false; alcoholConfirm = false;
-        showPage('testPage');
-        buildDimIndicator();
-        renderQuestion();
+        try {
+            currentQuestion = 0; answers = [];
+            userScores = {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0};
+            tagCounts = {}; drunkTriggered = false; alcoholConfirm = false;
+            buildDimIndicator();
+            showPage('testPage');
+            setTimeout(renderQuestion, 80);
+        } catch(e) {
+            console.error('startTest error:', e);
+            alert('启动失败，请刷新重试');
+        }
     }
 
     function buildDimIndicator() {
@@ -1406,37 +1422,46 @@
     }
 
     function renderQuestion() {
-        const dim = dimensions[currentQuestion];
-        document.getElementById('currentQ').textContent = currentQuestion + 1;
-        document.getElementById('currentQText').textContent = currentQuestion + 1;
-        document.getElementById('totalQ').textContent = dimensions.length;
-        document.getElementById('progressFill').style.width = (currentQuestion / dimensions.length * 100) + '%';
+        try {
+            var dim = dimensions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('currentQText').textContent = currentQuestion + 1;
+            document.getElementById('totalQ').textContent = dimensions.length;
+            document.getElementById('progressFill').style.width = (currentQuestion / dimensions.length * 100) + '%';
+            document.getElementById('dimTag').textContent = dim.icon + ' ' + dim.name;
+            document.getElementById('statementText').textContent = dim.statement;
+            document.getElementById('statementSub').textContent = dim.sub;
+            var container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            dim.options.forEach(function(opt, i) {
+                var div = document.createElement('div');
+                div.className = 'option' + (answers[currentQuestion] === i ? ' selected' : '');
+                var check = document.createElement('span');
+                check.className = 'option-check';
+                check.textContent = answers[currentQuestion] === i ? '\u2713' : '';
+                var textEl = document.createElement('span');
+                textEl.className = 'option-text';
+                textEl.textContent = opt.text;
+                div.appendChild(check);
+                div.appendChild(textEl);
+                div.onclick = (function(idx) { return function() { selectOption(idx); }; })(i);
+                container.appendChild(div);
+            });
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'flex' : 'none';
+            var isLast = currentQuestion === dimensions.length - 1;
+            document.getElementById('nextBtn').innerHTML = isLast
+                ? '\u751f\u6210\u786e\u8bca\u62a5\u544a <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+                : '\u4e0b\u4e00\u7ef4 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+            updateDimIndicator();
+        } catch(e) { console.error('renderQuestion error:', e); }
+    }
 
-        document.getElementById('dimTag').innerHTML = `${dim.icon} ${dim.name}`;
-        document.getElementById('statementText').textContent = dim.statement;
-        document.getElementById('statementSub').textContent = dim.sub;
-
-        const container = document.getElementById('optionsContainer');
-        container.innerHTML = '';
-        const checkmarks = ['✓', '✓', '✗', '✗'];
-        dim.options.forEach((opt, i) => {
-            const div = document.createElement('div');
-            div.className = 'option' + (answers[currentQuestion] === i ? ' selected' : '');
-            div.innerHTML = `
-                <span class="option-check">${answers[currentQuestion] === i ? '✓' : ''}</span>
-                <span class="option-text">${opt.text}</span>
-            `;
-            div.onclick = () => selectOption(i);
-            container.appendChild(div);
-        });
-
-        document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'flex' : 'none';
-        const isLast = currentQuestion === dimensions.length - 1;
-        document.getElementById('nextBtn').innerHTML = isLast
-            ? '生成确诊报告 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
-            : '下一维 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-        document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
-        updateDimIndicator();
+    function updateDimIndicator() {
+        var dots = document.querySelectorAll('.dim-dot');
+        for (var i = 0; i < dots.length; i++) {
+            dots[i].className = 'dim-dot' + (i < currentQuestion ? ' done' : i === currentQuestion ? ' active' : '');
+        }
     }
 
     function selectOption(index) {
