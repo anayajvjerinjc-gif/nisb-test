@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NISB 人格测试 - 测出你的真实精神状态</title>
+    <title>NISB 人格确诊报告 - 测出你的真实精神状态</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     <style>
         * {
@@ -23,6 +23,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --teal: #14b8a6;
         }
 
         body {
@@ -33,13 +34,10 @@
             overflow-x: hidden;
         }
 
-        /* 背景动画 */
         .bg-animation {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
@@ -48,10 +46,8 @@
         .bg-animation::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
             animation: pulse 8s ease-in-out infinite;
         }
@@ -73,97 +69,114 @@
             50% { transform: translateY(-30px) rotate(10deg); }
         }
 
-        /* 主容器 */
         .container {
             position: relative;
             z-index: 1;
-            max-width: 680px;
+            max-width: 700px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
         }
 
-        /* 页面 */
         .page {
             display: none;
             animation: fadeIn 0.5s ease;
         }
-
-        .page.active {
-            display: block;
-        }
+        .page.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 首页 */
+        /* ========== 首页 ========== */
         .hero {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 20px;
+        }
+
+        .hero-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+            60% { transform: scale(1); }
         }
 
         .hero-badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            padding: 6px 18px;
             border-radius: 50px;
-            font-size: 14px;
-            margin-bottom: 30px;
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
-            50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border: 1px solid rgba(239,68,68,0.4);
+            letter-spacing: 1px;
         }
 
         .hero h1 {
-            font-size: 56px;
+            font-size: 52px;
             font-weight: 900;
             background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
-            letter-spacing: -2px;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
 
         .hero-subtitle {
-            font-size: 20px;
+            font-size: 17px;
             color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        .hero-desc {
+            font-size: 15px;
+            color: var(--text-dim);
+            line-height: 1.8;
+            max-width: 480px;
+            margin: 0 auto 35px;
+            background: var(--dark-light);
+            border-radius: 16px;
+            padding: 20px 24px;
+            border: 1px solid rgba(255,255,255,0.06);
+            text-align: left;
+        }
+
+        .hero-desc span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .hero-dimensions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 40px;
         }
 
-        .hero-tagline {
-            font-size: 18px;
-            color: var(--accent);
-            margin-bottom: 50px;
-            font-style: italic;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 14px;
+        .dim-chip {
+            background: var(--dark-light);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
             color: var(--text-dim);
+            transition: all 0.3s;
+        }
+
+        .dim-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .btn {
@@ -186,104 +199,43 @@
             color: white;
             box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
         }
-
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
         }
-
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
         .btn-glass {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.08);
             backdrop-filter: blur(10px);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.15);
         }
+        .btn-glass:hover { background: rgba(255,255,255,0.15); }
 
-        /* 人格类型展示 */
-        .types-preview {
-            margin-top: 60px;
-            text-align: left;
-        }
-
-        .types-preview h3 {
-            font-size: 18px;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .types-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        @media (max-width: 600px) {
-            .types-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .type-chip {
-            background: var(--dark-light);
-            padding: 12px 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .type-chip:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .type-chip-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .type-chip-desc {
-            font-size: 11px;
-            color: var(--text-dim);
-        }
-
-        /* 测试页面 */
+        /* ========== 测试页 ========== */
         .test-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .test-progress {
-            flex: 1;
-            margin-right: 20px;
+            padding: 15px 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
         .progress-text {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dim);
             margin-bottom: 8px;
         }
 
         .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            height: 5px;
+            background: rgba(255,255,255,0.08);
             border-radius: 3px;
             overflow: hidden;
         }
@@ -292,372 +244,448 @@
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--accent));
             border-radius: 3px;
-            transition: width 0.5s ease;
+            transition: width 0.4s ease;
+        }
+
+        /* 维度进度指示器 */
+        .dim-indicator {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .dim-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .dim-dot.active {
+            background: var(--primary);
+            box-shadow: 0 0 6px rgba(102,126,234,0.6);
+        }
+
+        .dim-dot.done {
+            background: var(--success);
+        }
+
+        .dimension-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(102,126,234,0.15);
+            border: 1px solid rgba(102,126,234,0.3);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .dimension-tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
         .question-card {
             background: var(--dark-light);
             border-radius: 24px;
-            padding: 40px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px 28px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 20px;
         }
 
-        .question-number {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 6px 16px;
-            border-radius: 20px;
+        .statement-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            opacity: 0.6;
+        }
+
+        .statement-text {
+            font-size: 21px;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        .statement-sub {
             font-size: 13px;
-            font-weight: 600;
+            color: var(--text-dim);
             margin-bottom: 25px;
+            font-style: italic;
+            opacity: 0.7;
         }
 
-        .question-text {
-            font-size: 22px;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 35px;
+        .response-label {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .option {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 18px 24px;
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 16px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            align-items: center;
-            gap: 15px;
+            align-items: flex-start;
+            gap: 14px;
         }
 
         .option:hover {
-            border-color: var(--primary);
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateX(5px);
+            border-color: rgba(102,126,234,0.5);
+            background: rgba(102,126,234,0.08);
+            transform: translateX(4px);
         }
 
         .option.selected {
             border-color: var(--primary);
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(102,126,234,0.15);
         }
 
-        .option-letter {
-            width: 36px;
-            height: 36px;
+        .option-check {
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
             flex-shrink: 0;
-            transition: all 0.3s ease;
+            margin-top: 1px;
+            transition: all 0.3s;
+            font-size: 12px;
+            color: transparent;
         }
 
-        .option.selected .option-letter {
+        .option.selected .option-check {
             background: var(--primary);
+            border-color: var(--primary);
             color: white;
         }
 
         .option-text {
-            font-size: 16px;
-            line-height: 1.4;
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text);
         }
 
         .test-nav {
             display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            gap: 15px;
+            gap: 12px;
+            margin-top: 10px;
         }
 
         .test-nav .btn {
             flex: 1;
-            padding: 15px 30px;
+            padding: 14px 24px;
+            font-size: 16px;
         }
 
-        /* 加载动画 */
+        /* ========== 加载页 ========== */
         .loading {
             text-align: center;
-            padding: 80px 20px;
+            padding: 100px 20px;
         }
 
-        .loading-spinner {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            animation: spin 1s linear infinite;
+        .loading-icon {
+            font-size: 60px;
+            margin-bottom: 30px;
+            animation: spin 3s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
         }
 
         .loading-text {
-            font-size: 20px;
-            color: var(--text-dim);
+            font-size: 22px;
+            font-weight: 600;
             margin-bottom: 15px;
         }
 
-        .loading-tip {
+        .loading-sub {
             font-size: 14px;
             color: var(--text-dim);
-            opacity: 0.6;
         }
 
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
+        .loading-bar-wrap {
+            width: 300px;
+            max-width: 100%;
+            margin: 30px auto 0;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
         }
 
-        @keyframes dots {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-            100% { content: ''; }
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+            background-size: 200% 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
+            border-radius: 10px;
         }
 
-        /* 结果页面 */
+        @keyframes shimmer {
+            0% { width: 5%; background-position: 100% 0; }
+            50% { width: 60%; background-position: 0% 0; }
+            100% { width: 95%; background-position: 100% 0; }
+        }
+
+        /* ========== 结果页 ========== */
         .result-header {
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px 20px;
         }
 
         .result-badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            padding: 5px 16px;
             border-radius: 50px;
-            font-size: 14px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            border: 1px solid rgba(239,68,68,0.3);
         }
 
         .result-type {
-            font-size: 72px;
+            font-size: 64px;
             font-weight: 900;
             background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             letter-spacing: 4px;
         }
 
         .result-name {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .result-match {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-dim);
-            margin-bottom: 30px;
+            margin-bottom: 5px;
         }
 
         .result-match strong {
             color: var(--primary);
-            font-size: 24px;
+            font-size: 22px;
         }
 
-        .result-quote {
-            background: var(--dark-light);
+        .result-diagnosis {
+            background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(240,147,251,0.1));
+            border: 1px solid rgba(102,126,234,0.2);
             border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
-            border-left: 4px solid var(--primary);
-            font-style: italic;
-            font-size: 18px;
-            line-height: 1.6;
-            text-align: center;
+            padding: 25px 28px;
+            margin: 25px 0;
+            text-align: left;
         }
 
-        /* 雷达图 */
-        .radar-section {
-            background: var(--dark-light);
-            border-radius: 24px;
-            padding: 30px;
-            margin: 30px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .radar-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .radar-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
-        }
-
-        .radar-chart {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 维度详情 */
-        .dimensions-section {
-            margin: 30px 0;
-        }
-
-        .dimension-item {
-            background: var(--dark-light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .dimension-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .dimension-name {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .dimension-score {
-            font-size: 14px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .dimension-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .dimension-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .dimension-desc {
-            font-size: 13px;
-            color: var(--text-dim);
-            line-height: 1.5;
-        }
-
-        /* 相似人格 */
-        .similar-section {
-            margin: 30px 0;
-        }
-
-        .similar-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .similar-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        @media (max-width: 400px) {
-            .similar-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .similar-card {
-            background: var(--dark-light);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .similar-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .similar-type {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .similar-name {
-            font-size: 14px;
-            color: var(--text-dim);
-            margin-bottom: 8px;
-        }
-
-        .similar-match {
+        .diagnosis-title {
             font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .diagnosis-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .diagnosis-text strong {
             color: var(--accent);
         }
 
-        /* 结果操作 */
+        /* 15维度图表 */
+        .chart-section {
+            margin: 25px 0;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+
+        .chart-item {
+            background: var(--dark-light);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .chart-item-name {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .chart-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .chart-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+
+        .chart-score {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .chart-bar-high .chart-fill { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+        .chart-bar-mid .chart-fill { background: linear-gradient(90deg, var(--primary), var(--accent)); }
+        .chart-bar-low .chart-fill { background: rgba(255,255,255,0.2); }
+
+        /* 维度解读 */
+        .insight-section {
+            margin: 25px 0;
+        }
+
+        .insight-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .insight-card {
+            background: var(--dark-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-left: 3px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .insight-card:hover {
+            transform: translateX(4px);
+            border-left-color: var(--accent);
+        }
+
+        .insight-label {
+            font-size: 11px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .insight-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        /* 标签 */
+        .tags-section {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .tags-title {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .tag-item {
+            background: rgba(102,126,234,0.15);
+            border: 1px solid rgba(102,126,234,0.25);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--primary);
+        }
+
+        /* 操作按钮 */
         .result-actions {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin: 40px 0;
+            gap: 12px;
+            margin: 35px 0;
         }
 
-        .result-actions .btn {
-            width: 100%;
-        }
+        .result-actions .btn { width: 100%; }
 
-        /* 彩蛋弹窗 */
-        .easter-egg-overlay {
+        /* 彩蛋 */
+        .easter-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
         }
 
-        .easter-egg-overlay.active {
-            display: flex;
-        }
+        .easter-overlay.active { display: flex; }
 
-        .easter-egg-content {
+        .easter-content {
             background: var(--dark-light);
             border-radius: 24px;
             padding: 40px;
-            max-width: 400px;
+            max-width: 380px;
             text-align: center;
-            border: 2px solid var(--primary);
+            border: 2px solid var(--danger);
             animation: popIn 0.5s ease;
         }
 
@@ -667,42 +695,21 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .easter-egg-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        .easter-egg-title {
-            font-size: 24px;
+        .easter-icon { font-size: 56px; margin-bottom: 18px; }
+        .easter-title {
+            font-size: 22px;
             font-weight: 700;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--accent);
         }
-
-        .easter-egg-desc {
-            font-size: 16px;
+        .easter-desc {
+            font-size: 15px;
             color: var(--text-dim);
-            line-height: 1.6;
-            margin-bottom: 25px;
+            line-height: 1.7;
+            margin-bottom: 22px;
         }
 
-        /* 页脚 */
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-dim);
-            font-size: 13px;
-        }
-
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        /* Toast 提示 */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -710,7 +717,7 @@
             transform: translateX(-50%) translateY(100px);
             background: var(--dark-light);
             color: var(--text);
-            padding: 15px 30px;
+            padding: 14px 28px;
             border-radius: 50px;
             border: 1px solid var(--primary);
             font-size: 14px;
@@ -718,249 +725,186 @@
             transition: all 0.3s ease;
             z-index: 1001;
         }
-
         .toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
 
-        /* 隐藏类 */
-        .hidden {
-            display: none !important;
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-dim);
+            font-size: 12px;
         }
+
+        .hidden { display: none !important; }
+
+        /* 确诊风格进度条 */
+        .diagnosis-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .diag-num {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .diag-info { flex: 1; }
     </style>
 </head>
 <body>
     <div class="bg-animation" id="bgAnimation"></div>
 
     <div class="container">
-        <!-- 首页 -->
+        <!-- ========== 首页 ========== -->
         <div class="page active" id="homePage">
             <div class="hero">
-                <div class="hero-badge">2026 全网爆火人格测试</div>
+                <div class="hero-icon">🧠</div>
+                <div class="hero-badge">⚠️ 精神状态诊断报告</div>
                 <h1>NISB</h1>
-                <p class="hero-subtitle">Not In Status Baby 人格测试</p>
-                <p class="hero-tagline">"你不是性格有问题，你只是 NISB。"</p>
+                <p class="hero-subtitle">人格确诊报告 — 15维度深度扫描</p>
 
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">21</div>
-                        <div class="stat-label">道测试题目</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">24</div>
-                        <div class="stat-label">种人格类型</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">大心理模型</div>
-                    </div>
+                <div class="hero-desc">
+                    本报告基于 <span>15个核心维度</span> 对你的精神状态、人格结构、行为模式进行全方位扫描诊断。<br><br>
+                    不是测试，是<span>确诊</span>。
+                    每一道题都是一面镜子，<span>你在照镜子的时候</span>，镜子也在确认你的病情。
+                </div>
+
+                <div class="hero-dimensions">
+                    <span class="dim-chip">自我认知</span>
+                    <span class="dim-chip">情绪稳定</span>
+                    <span class="dim-chip">压力应对</span>
+                    <span class="dim-chip">社交模式</span>
+                    <span class="dim-chip">现实感知</span>
+                    <span class="dim-chip">情感依赖</span>
+                    <span class="dim-chip">边界意识</span>
+                    <span class="dim-chip">行动力</span>
+                    <span class="dim-chip">内耗程度</span>
+                    <span class="dim-chip">价值排序</span>
+                    <span class="dim-chip">身份认同</span>
+                    <span class="dim-chip">心理韧性</span>
+                    <span class="dim-chip">防御机制</span>
+                    <span class="dim-chip">生活状态</span>
+                    <span class="dim-chip">成瘾倾向</span>
                 </div>
 
                 <button class="btn btn-primary" onclick="startTest()">
-                    <span>开始测试</span>
+                    开始确诊
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </button>
-
-                <div class="types-preview">
-                    <h3>人格类型一览</h3>
-                    <div class="types-grid">
-                        <div class="type-chip">
-                            <div class="type-chip-name">ZZZ</div>
-                            <div class="type-chip-desc">装死专家</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">MALO</div>
-                            <div class="type-chip-desc">牛马打工人</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">CTRL</div>
-                            <div class="type-chip-desc">拿捏大师</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">ATM</div>
-                            <div class="type-chip-desc">人形ATM</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">IMSB</div>
-                            <div class="type-chip-desc">内耗之王</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">DEAD</div>
-                            <div class="type-chip-desc">已逝人士</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">JOKE</div>
-                            <div class="type-chip-desc">小丑本丑</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">BOSS</div>
-                            <div class="type-chip-desc">卷王本王</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">SOLO</div>
-                            <div class="type-chip-desc">孤独选手</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">THINK</div>
-                            <div class="type-chip-desc">想太多星人</div>
-                        </div>
-                        <div class="type-chip">
-                            <div class="type-chip-name">???</div>
-                            <div class="type-chip-desc">神秘人格</div>
-                        </div>
-                        <div class="type-chip" style="border-color: var(--accent);">
-                            <div class="type-chip-name" style="color: var(--accent);">DRUNK</div>
-                            <div class="type-chip-desc">隐藏酒鬼</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="footer">
-                <p>NISB 人格测试 · 纯属娱乐 · 切勿当真</p>
-                <p>如有雷同，欢迎对号入座</p>
+                <p>本确诊报告仅供娱乐参考</p>
+                <p>如有真实心理困扰，请寻求专业帮助</p>
             </div>
         </div>
 
-        <!-- 测试页面 -->
+        <!-- ========== 测试页 ========== -->
         <div class="page" id="testPage">
             <div class="test-header">
-                <div class="test-progress">
-                    <div class="progress-text">题目 <span id="currentQ">1</span> / <span id="totalQ">21</span></div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                <div class="diagnosis-progress">
+                    <div class="diag-num"><span id="currentQ">1</span>/<span id="totalQ">15</span></div>
+                    <div class="diag-info">
+                        <div class="progress-text">正在扫描第 <span id="currentQText">1</span> 个维度</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                        </div>
+                        <div class="dim-indicator" id="dimIndicator"></div>
                     </div>
                 </div>
             </div>
 
             <div class="question-card">
-                <div class="question-number" id="questionNumber">Q1</div>
-                <div class="question-text" id="questionText"></div>
+                <div class="dimension-tag" id="dimTag"></div>
+                <div class="statement-label">患者自述</div>
+                <div class="statement-text" id="statementText"></div>
+                <div class="statement-sub" id="statementSub"></div>
+                <div class="response-label">您的确认：</div>
                 <div class="options" id="optionsContainer"></div>
             </div>
 
             <div class="test-nav">
-                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display: none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display:none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
-                    上一题
+                    上一维
                 </button>
                 <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
-                    下一题
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    下一维
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </button>
             </div>
         </div>
 
-        <!-- 加载页面 -->
+        <!-- ========== 加载页 ========== -->
         <div class="page" id="loadingPage">
             <div class="loading">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">正在分析你的灵魂<span class="loading-dots"></span></div>
-                <div class="loading-tip" id="loadingTip">你在人群中是哪种存在...</div>
+                <div class="loading-icon">🧠</div>
+                <div class="loading-text">正在生成你的确诊报告</div>
+                <div class="loading-sub" id="loadingSub">扫描自我认知维度...</div>
+                <div class="loading-bar-wrap">
+                    <div class="loading-bar"></div>
+                </div>
             </div>
         </div>
 
-        <!-- 结果页面 -->
+        <!-- ========== 结果页 ========== -->
         <div class="page" id="resultPage">
             <div class="result-header">
-                <div class="result-badge">你的 NISB 人格是</div>
+                <div class="result-badge">确诊报告</div>
                 <div class="result-type" id="resultType"></div>
                 <div class="result-name" id="resultName"></div>
-                <div class="result-match">匹配度 <strong id="resultMatch"></strong></div>
+                <div class="result-match">确诊匹配度 <strong id="resultMatch"></strong></div>
             </div>
 
-            <div class="result-quote" id="resultQuote"></div>
-
-            <div class="radar-section">
-                <div class="radar-title">五维人格雷达图</div>
-                <div class="radar-container">
-                    <canvas id="radarChart" class="radar-chart"></canvas>
-                </div>
+            <div class="result-diagnosis">
+                <div class="diagnosis-title">📋 诊断结论</div>
+                <div class="diagnosis-text" id="diagnosisText"></div>
             </div>
 
-            <div class="dimensions-section">
-                <div class="dimension-item">
-                    <div class="dimension-header">
-                        <span class="dimension-name">自我模型</span>
-                        <span class="dimension-score" id="selfScore"></span>
-                    </div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="selfFill" style="width: 0%"></div>
-                    </div>
-                    <div class="dimension-desc" id="selfDesc"></div>
-                </div>
-                <div class="dimension-item">
-                    <div class="dimension-header">
-                        <span class="dimension-name">情感模型</span>
-                        <span class="dimension-score" id="emotionScore"></span>
-                    </div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="emotionFill" style="width: 0%"></div>
-                    </div>
-                    <div class="dimension-desc" id="emotionDesc"></div>
-                </div>
-                <div class="dimension-item">
-                    <div class="dimension-header">
-                        <span class="dimension-name">态度模型</span>
-                        <span class="dimension-score" id="attitudeScore"></span>
-                    </div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="attitudeFill" style="width: 0%"></div>
-                    </div>
-                    <div class="dimension-desc" id="attitudeDesc"></div>
-                </div>
-                <div class="dimension-item">
-                    <div class="dimension-header">
-                        <span class="dimension-name">行动模型</span>
-                        <span class="dimension-score" id="actionScore"></span>
-                    </div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="actionFill" style="width: 0%"></div>
-                    </div>
-                    <div class="dimension-desc" id="actionDesc"></div>
-                </div>
-                <div class="dimension-item">
-                    <div class="dimension-header">
-                        <span class="dimension-name">社交模型</span>
-                        <span class="dimension-score" id="socialScore"></span>
-                    </div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="socialFill" style="width: 0%"></div>
-                    </div>
-                    <div class="dimension-desc" id="socialDesc"></div>
-                </div>
+            <div class="tags-section">
+                <div class="tags-title">已确认症状标签</div>
+                <div class="tags-list" id="tagsList"></div>
             </div>
 
-            <div class="similar-section">
-                <div class="similar-title">你可能还喜欢</div>
-                <div class="similar-grid" id="similarGrid"></div>
+            <div class="insight-section" id="insightSection">
+                <div class="insight-title">🔍 深度解读</div>
+                <div id="insightList"></div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-title">📊 15维度雷达图</div>
+                <div class="chart-grid" id="chartGrid"></div>
             </div>
 
             <div class="result-actions">
                 <button class="btn btn-primary" onclick="shareResult()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                         <polyline points="16 6 12 2 8 6"/>
                         <line x1="12" y1="2" x2="12" y2="15"/>
                     </svg>
-                    分享结果
+                    分享确诊报告
                 </button>
                 <button class="btn btn-secondary" onclick="restartTest()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="23 4 23 10 17 10"/>
                         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                     </svg>
-                    再测一次
+                    再次确诊
                 </button>
                 <button class="btn btn-glass" onclick="goHome()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                         <polyline points="9 22 9 12 15 12 15 22"/>
                     </svg>
@@ -969,1094 +913,789 @@
             </div>
 
             <div class="footer">
-                <p>NISB 人格测试 · 纯属娱乐 · 切勿当真</p>
-                <p>如有雷同，欢迎对号入座</p>
+                <p>本确诊报告仅供娱乐参考</p>
+                <p>如有真实心理困扰，请寻求专业帮助</p>
             </div>
         </div>
     </div>
 
     <!-- 彩蛋弹窗 -->
-    <div class="easter-egg-overlay" id="easterEggOverlay">
-        <div class="easter-egg-content">
-            <div class="easter-egg-icon" id="easterEggIcon"></div>
-            <div class="easter-egg-title" id="easterEggTitle"></div>
-            <div class="easter-egg-desc" id="easterEggDesc"></div>
-            <button class="btn btn-primary" onclick="closeEasterEgg()">继续探索</button>
+    <div class="easter-overlay" id="easterOverlay">
+        <div class="easter-content">
+            <div class="easter-icon" id="easterIcon"></div>
+            <div class="easter-title" id="easterTitle"></div>
+            <div class="easter-desc" id="easterDesc"></div>
+            <button class="btn btn-primary" onclick="closeEaster()">收到确诊</button>
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // ==================== 题目数据 ====================
-        const questions = [
-            {
-                id: 1,
-                text: "周末早上8点，你醒了但又没完全醒，你的选择是：",
-                options: [
-                    { text: "起床！新的一天新的开始！（flag已立）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: [] },
-                    { text: "再睡5分钟...再5分钟...已经下午2点了", scores: { self: 1, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["zzz"] },
-                    { text: "醒了但没起，躺着刷手机，这叫\"战略性充电\"", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["malo"] },
-                    { text: "根本不存在\"早上8点自然醒\"这个选项", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["zzz", "dead"] }
-                ]
-            },
-            {
-                id: 2,
-                text: "同事问你\"你觉得我今天有什么不一样吗？\"，你：",
-                options: [
-                    { text: "认真观察并回答（社交真诚度100%）", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["heal"] },
-                    { text: "说\"没有啊\"（省事省心）", scores: { self: 2, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["solo"] },
-                    { text: "说\"你今天...精神不错？\"（模糊敷衍）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["witch"] },
-                    { text: "反问\"你整容了？\"（开启地狱模式）", scores: { self: 3, emotion: 1, attitude: 1, action: 2, social: 2 }, tags: ["joke"] }
-                ]
-            },
-            {
-                id: 3,
-                text: "朋友找你帮忙，你其实很忙，但你会：",
-                options: [
-                    { text: "立刻答应，然后自己加班到凌晨", scores: { self: 1, emotion: 3, attitude: 2, action: 2, social: 3 }, tags: ["atm"] },
-                    { text: "犹豫半天最后还是答应了（嘴硬心软）", scores: { self: 2, emotion: 3, attitude: 2, action: 1, social: 2 }, tags: ["atm", "imsb"] },
-                    { text: "说\"不好意思我在忙\"然后心安理得玩手机", scores: { self: 3, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["ctrl"] },
-                    { text: "已读不回（最省事）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost"] }
-                ]
-            },
-            {
-                id: 4,
-                text: "地铁上有人插队到你前面，你：",
-                options: [
-                    { text: "大声说\"后面排队！\"（正义使者）", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["boss"] },
-                    { text: "内心骂街但表面沉默（怂）", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["imsb"] },
-                    { text: "跟着插进去（既然他能我也能）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["shit"] },
-                    { text: "假装没看见继续刷手机（别惹事）", scores: { self: 2, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ghost"] }
-                ]
-            },
-            {
-                id: 5,
-                text: "工作群里有同事发了错别字，你会：",
-                options: [
-                    { text: "立刻私信指出（维护团队形象）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["ctrl", "boss"] },
-                    { text: "当没看见，不想当出头鸟", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["npc"] },
-                    { text: "等别人说了再说（观望型）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think"] },
-                    { text: "在心里记下这个人的学历水平", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "shit"] }
-                ]
-            },
-            {
-                id: 6,
-                text: "中午吃什么，这个世纪难题你会：",
-                options: [
-                    { text: "快速决定从不纠结（今天就吃黄焖鸡）", scores: { self: 3, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["ctrl"] },
-                    { text: "打开大众点评刷30分钟", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["think", "imsb"] },
-                    { text: "等别人点好了跟着点", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["solo", "npc"] },
-                    { text: "不吃了，反正也不饿（省钱）", scores: { self: 1, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["poor", "dead"] }
-                ]
-            },
-            {
-                id: 7,
-                text: "暧昧对象已读不回3小时，你会：",
-                options: [
-                    { text: "再发一条\"在吗\"（焦虑型实锤）", scores: { self: 1, emotion: 3, attitude: 2, action: 2, social: 2 }, tags: ["imsb", "lover"] },
-                    { text: "该干嘛干嘛，反正我很忙（安全型）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["ctrl"] },
-                    { text: "删掉对话框假装没发过（回避型）", scores: { self: 2, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["ghost", "solo"] },
-                    { text: "发朋友圈暗示\"有些人已读不回\"（作死型）", scores: { self: 2, emotion: 2, attitude: 1, action: 2, social: 3 }, tags: ["joke", "witch"] }
-                ]
-            },
-            {
-                id: 8,
-                text: "被拉进一个新朋友的局，你通常会：",
-                options: [
-                    { text: "主动social，carry全场（社牛模式）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["boss", "joke"] },
-                    { text: "礼貌微笑，等待别人搭话", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["heal"] },
-                    { text: "找个角落玩手机，降低存在感", scores: { self: 1, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ghost", "solo"] },
-                    { text: "找个理由早点撤退（借口已备好）", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost"] }
-                ]
-            },
-            {
-                id: 9,
-                text: "\"你觉得自己这辈子能实现阶层跨越吗？\"",
-                options: [
-                    { text: "当然可以！我命由我不由天！", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 2 }, tags: ["boss", "ctrl"] },
-                    { text: "难说，但还是要努力一下", scores: { self: 2, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["think"] },
-                    { text: "笑死，阶层固化懂不懂", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 2 }, tags: ["shit", "dead"] },
-                    { text: "想这些干嘛，先把今天的班上完", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 1 }, tags: ["malo"] }
-                ]
-            },
-            {
-                id: 10,
-                text: "如果中了500万，你第一件事是：",
-                options: [
-                    { text: "辞职！老子不干了！", scores: { self: 3, emotion: 2, attitude: 1, action: 3, social: 2 }, tags: ["malo", "fuck"] },
-                    { text: "存银行吃利息，继续上班（稳定型）", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["ctrl", "think"] },
-                    { text: "给父母一半，自己留学去", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["heal"] },
-                    { text: "先还花呗，然后继续搬砖", scores: { self: 1, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["poor"] }
-                ]
-            },
-            {
-                id: 11,
-                text: "你加班是因为：",
-                options: [
-                    { text: "真的热爱工作（极少数）", scores: { self: 3, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["boss", "pro"] },
-                    { text: "责任心驱使，不做好睡不着", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["ctrl", "imsb"] },
-                    { text: "没办法，不加班活不下去", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["malo"] },
-                    { text: "其实也没什么事，就是不想回家", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "solo"] }
-                ]
-            },
-            {
-                id: 12,
-                text: "朋友跟你吐槽另一半，你会：",
-                options: [
-                    { text: "跟着骂，帮朋友出气", scores: { self: 2, emotion: 3, attitude: 2, action: 3, social: 3 }, tags: ["heal", "joke"] },
-                    { text: "理性分析，给出建议", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["think", "ctrl"] },
-                    { text: "安静倾听，偶尔点头", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["heal"] },
-                    { text: "默默记下，等他们分手后说\"我当时就说嘛\"", scores: { self: 2, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["witch", "shit"] }
-                ]
-            },
-            {
-                id: 13,
-                text: "你觉得大部分人是：",
-                options: [
-                    { text: "好人居多，愿意相信", scores: { self: 3, emotion: 3, attitude: 3, action: 2, social: 3 }, tags: ["heal"] },
-                    { text: "分情况，害人之心不可有防人之心不可无", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think"] },
-                    { text: "大部分人只在乎自己", scores: { self: 2, emotion: 1, attitude: 2, action: 2, social: 2 }, tags: ["ghost"] },
-                    { text: "人类悲观样本大赏", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["shit", "dead"] }
-                ]
-            },
-            {
-                id: 14,
-                text: "朋友找你借5000块，你会：",
-                options: [
-                    { text: "问都不问直接转（信任度拉满）", scores: { self: 2, emotion: 3, attitude: 3, action: 3, social: 3 }, tags: ["atm", "heal"] },
-                    { text: "犹豫半天，最后还是借了（心软型）", scores: { self: 2, emotion: 3, attitude: 2, action: 1, social: 2 }, tags: ["atm", "imsb"] },
-                    { text: "说\"我也没钱\"然后默默打开基金账户", scores: { self: 3, emotion: 1, attitude: 2, action: 3, social: 1 }, tags: ["poor", "ctrl"] },
-                    { text: "反手问他什么时候还上次借的200", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["witch", "shit"] }
-                ]
-            },
-            {
-                id: 15,
-                text: "\"你最讨厌自己的一点是：\"",
-                options: [
-                    { text: "三天三夜说不完（自我认知清晰但内耗）", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["think", "imsb"] },
-                    { text: "好像也没什么讨厌的（自我接纳度高）", scores: { self: 3, emotion: 3, attitude: 3, action: 3, social: 2 }, tags: ["ctrl"] },
-                    { text: "说不上来，就是觉得自己不够好", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 1 }, tags: ["imsb"] },
-                    { text: "我讨厌的地方多了，你自己挑一个", scores: { self: 2, emotion: 1, attitude: 1, action: 2, social: 2 }, tags: ["shit", "dead"] }
-                ]
-            },
-            {
-                id: 16,
-                text: "面对人生重大选择，你通常：",
-                options: [
-                    { text: "深思熟虑，把利弊写满一张纸", scores: { self: 3, emotion: 2, attitude: 3, action: 1, social: 2 }, tags: ["think", "ctrl"] },
-                    { text: "跟着感觉走，船到桥头自然直", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["chaos"] },
-                    { text: "问爸妈/朋友/算命的意见", scores: { self: 1, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["solo", "npc"] },
-                    { text: "能逃避就逃避，等它自己解决", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["zzz", "dead"] }
-                ]
-            },
-            {
-                id: 17,
-                text: "亲戚问你\"谈对象了吗？工资多少？\"，你：",
-                options: [
-                    { text: "微笑礼貌回答（演技派）", scores: { self: 2, emotion: 2, attitude: 3, action: 3, social: 3 }, tags: ["fake", "witch"] },
-                    { text: "反问\"您家孩子呢？\"（以攻为守）", scores: { self: 3, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["witch", "boss"] },
-                    { text: "直接说\"这是我的隐私\"", scores: { self: 3, emotion: 1, attitude: 2, action: 2, social: 1 }, tags: ["ctrl", "ghost"] },
-                    { text: "借口上厕所遁走", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["ghost", "malo"] }
-                ]
-            },
-            {
-                id: 18,
-                text: "发朋友圈时，你会：",
-                options: [
-                    { text: "发最真实的日常，管你们怎么看", scores: { self: 3, emotion: 3, attitude: 3, action: 2, social: 3 }, tags: ["heal", "boss"] },
-                    { text: "精心挑选9图，修图2小时", scores: { self: 2, emotion: 2, attitude: 2, action: 1, social: 2 }, tags: ["fake"] },
-                    { text: "只发工作相关（立人设）", scores: { self: 2, emotion: 1, attitude: 2, action: 3, social: 2 }, tags: ["fake", "boss"] },
-                    { text: "从不发朋友圈（圈死人）", scores: { self: 2, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["ghost", "solo"] }
-                ]
-            },
-            {
-                id: 19,
-                text: "公司的流程很繁琐，你会：",
-                options: [
-                    { text: "严格遵守，绝不越雷池半步", scores: { self: 2, emotion: 2, attitude: 3, action: 1, social: 2 }, tags: ["npc", "think"] },
-                    { text: "能简化就简化，但要看起来合规", scores: { self: 3, emotion: 2, attitude: 2, action: 3, social: 2 }, tags: ["ctrl", "boss"] },
-                    { text: "先斩后奏，做完再说", scores: { self: 3, emotion: 1, attitude: 1, action: 3, social: 2 }, tags: ["boss", "fuck"] },
-                    { text: "流程是给老实人准备的", scores: { self: 2, emotion: 1, attitude: 1, action: 3, social: 1 }, tags: ["shit", "chaos"] }
-                ]
-            },
-            {
-                id: 20,
-                text: "别人夸你，你会：",
-                options: [
-                    { text: "谢谢，然后暗暗开心三天", scores: { self: 3, emotion: 2, attitude: 3, action: 2, social: 2 }, tags: ["heal"] },
-                    { text: "谦虚说\"哪里哪里\"", scores: { self: 2, emotion: 2, attitude: 3, action: 2, social: 3 }, tags: ["heal", "fake"] },
-                    { text: "觉得对方在客套（习惯性怀疑）", scores: { self: 1, emotion: 1, attitude: 1, action: 2, social: 1 }, tags: ["imsb"] },
-                    { text: "立刻找自己的不足来抵消这份夸奖", scores: { self: 1, emotion: 1, attitude: 2, action: 1, social: 1 }, tags: ["imsb", "dead"] }
-                ]
-            },
-            {
-                id: 21,
-                text: "你喝酒通常是因为：",
-                options: [
-                    { text: "喜欢酒的味道，品酒人士", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 2 }, tags: ["chaos"] },
-                    { text: "场合需要，不喝不合群", scores: { self: 2, emotion: 2, attitude: 2, action: 2, social: 3 }, tags: ["fake"] },
-                    { text: "只有喝酒的时候才觉得自己有点用", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["imsb", "dead", "drunk"] },
-                    { text: "压力大，借酒消愁", scores: { self: 1, emotion: 1, attitude: 1, action: 1, social: 1 }, tags: ["dead", "drunk", "shit"] }
-                ],
+    // ==================== 15维度确诊题目 ====================
+    // 每道题是一个"自述式陈述"，4个选项对应不同确诊程度
+    const dimensions = [
+        {
+            id: 1, key: 'self', name: '自我认知',
+            icon: '🪞',
+            statement: '"我对自己有清醒的认知，我知道我是谁，我知道我要什么。"',
+            sub: '这句话，你说的出口吗？',
+            options: [
+                { text: '完全符合。这是我少数确定的事之一', scores: {self:3,emotion:2,stress:2,social:2,reality:3,depend:2,bound:3,action:2,inner:3,value:3,identity:3,resilience:3,defense:3,life:2,addict:2}, level: 0, tags: [] },
+                { text: '大概吧，但偶尔也会迷茫，事后才看清自己', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '说实话，我经常不确定自己到底是谁', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['imsb','confused'] },
+                { text: '我是谁？我在哪？这是我每天的灵魂拷问', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['imsb','confused','dead'] }
+            ]
+        },
+        {
+            id: 2, key: 'emotion', name: '情绪稳定',
+            icon: '🌊',
+            statement: '"我的情绪基本稳定，不会因为小事大起大落。"',
+            sub: '你的情绪，是你在控制它，还是它在控制你？',
+            options: [
+                { text: '稳定。我能感知情绪，但不会被情绪淹没', scores: {self:3,emotion:3,stress:3,social:2,reality:2,depend:3,bound:3,action:2,inner:3,value:2,identity:2,resilience:3,defense:2,life:2,addict:2}, level: 0, tags: [] },
+                { text: '大部分时候稳定，偶尔崩一下也能自己调整', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我的情绪像过山车，我自己都习惯了', scores: {self:1,emotion:1,stress:1,social:1,reality:2,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['imsb','chaos'] },
+                { text: '情绪稳定？不存在的。我每天都在坐情绪过山车', scores: {self:0,emotion:0,stress:0,social:0,reality:1,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['imsb','chaos','dead'] }
+            ]
+        },
+        {
+            id: 3, key: 'stress', name: '压力应对',
+            icon: '⚖️',
+            statement: '"面对压力，我能有效应对，不会被压力击垮。"',
+            sub: '压力来临时，你是战斗、逃跑、还是僵住？',
+            options: [
+                { text: '我能把压力转化为动力，压力越大我越稳', scores: {self:3,emotion:3,stress:3,social:2,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:2}, level: 0, tags: ['boss'] },
+                { text: '会有压力，但能找到方式消化，不会硬扛', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: ['heal'] },
+                { text: '压力一来我就开始摆烂，能逃就逃', scores: {self:1,emotion:1,stress:1,social:1,reality:2,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['zzz','malo'] },
+                { text: '压力就像一座山，我已经被压扁了', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','malo','addict'] }
+            ]
+        },
+        {
+            id: 4, key: 'social', name: '社交模式',
+            icon: '👥',
+            statement: '"我在社交中感到自在，不需要刻意伪装。"',
+            sub: '社交对你来说是充电，还是耗电？',
+            options: [
+                { text: '社交让我能量满满，我主动享受社交', scores: {self:3,emotion:3,stress:2,social:3,reality:2,depend:2,bound:3,action:3,inner:3,value:2,identity:3,resilience:2,defense:2,life:2,addict:2}, level: 0, tags: ['boss'] },
+                { text: '社交舒适，但独处也很重要，我都能接受', scores: {self:3,emotion:2,stress:2,social:2,reality:2,depend:2,bound:3,action:2,inner:3,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: ['heal'] },
+                { text: '社交让我很累，我更喜欢一个人待着', scores: {self:2,emotion:1,stress:1,social:1,reality:2,depend:1,bound:2,action:1,inner:2,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['solo','ghost'] },
+                { text: '我根本不想社交，一个人待着是我唯一的喘息', scores: {self:1,emotion:0,stress:0,social:0,reality:1,depend:0,bound:1,action:0,inner:1,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['ghost','dead','solo'] }
+            ]
+        },
+        {
+            id: 5, key: 'reality', name: '现实感知',
+            icon: '🎯',
+            statement: '"我对现实的感知是清醒的，脚踏实地，不活在幻觉里。"',
+            sub: '你是活在真实世界里，还是活在自己构建的叙事里？',
+            options: [
+                { text: '非常清醒。我知道什么是真实的，什么是幻觉', scores: {self:3,emotion:3,stress:3,social:2,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:2,life:3,addict:3}, level: 0, tags: [] },
+                { text: '大部分时候清醒，偶尔会自欺欺人一下', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: ['fake'] },
+                { text: '我会美化现实，或者选择性忽略不想面对的事', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['fake','witch'] },
+                { text: '我活在梦里，不愿意面对真实的世界', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','chaos'] }
+            ]
+        },
+        {
+            id: 6, key: 'depend', name: '情感依赖',
+            icon: '🪢',
+            statement: '"我能独立满足自己的情感需求，不依赖他人来定义我的价值。"',
+            sub: '你的情感，是自给自足，还是需要别人来供氧？',
+            options: [
+                { text: '完全独立。自己的情绪自己负责，不从外部找存在感', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['ctrl'] },
+                { text: '偶尔会想依赖，但大多数时候能自己扛', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: ['heal'] },
+                { text: '我需要有人陪伴和认可，否则我会觉得自己没有价值', scores: {self:1,emotion:1,stress:1,social:1,reality:2,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['atm','imsb','lover'] },
+                { text: '我的情绪和价值完全取决于别人怎么对我', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['atm','lover','imsb'] }
+            ]
+        },
+        {
+            id: 7, key: 'bound', name: '边界意识',
+            icon: '🚧',
+            statement: '"我清楚自己的边界，能对不合理的要求说不。"',
+            sub: '你的底线，是清晰可见，还是形同虚设？',
+            options: [
+                { text: '边界清晰。我明确知道什么可以，什么绝对不行', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['ctrl','witch'] },
+                { text: '大部分时候能守住边界，偶尔会勉强自己', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '边界经常被侵犯，我不好意思拒绝别人', scores: {self:1,emotion:1,stress:1,social:1,reality:2,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['atm','imsb','npc'] },
+                { text: '我没有边界，或者说我根本不知道自己的边界在哪', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['atm','dead','npc'] }
+            ]
+        },
+        {
+            id: 8, key: 'action', name: '行动力',
+            icon: '⚡',
+            statement: '"我能有效执行自己的计划，不会光想不动。"',
+            sub: '你是一个行动派，还是一个思想上的巨人，行动上的矮子？',
+            options: [
+                { text: '行动力拉满，想到就做，执行力是我最强的能力', scores: {self:3,emotion:2,stress:2,social:2,reality:3,depend:2,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['boss','pro'] },
+                { text: '有计划会执行，但有时候会拖延', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: ['malo'] },
+                { text: '计划很丰满，执行很骨感，经常想得多做得少', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['think','imsb'] },
+                { text: '光是想想就累了，做什么都是三分钟热度', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','zzz','think'] }
+            ]
+        },
+        {
+            id: 9, key: 'inner', name: '内耗程度',
+            icon: '🌀',
+            statement: '"我的内心消耗很轻，不会反复纠结、过度反思。"',
+            sub: '你的内心，是宁静的湖面，还是永不停歇的风暴？',
+            options: [
+                { text: '内心平静。我能接纳自己，不会过度内耗', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['ctrl','heal'] },
+                { text: '偶尔会内耗，但能自我调节，不会陷太久', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我经常在脑子里开辩论会，赢了也累', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['imsb','think'] },
+                { text: '我的脑子24小时不关机，内耗到精疲力竭', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['imsb','dead','think'] }
+            ]
+        },
+        {
+            id: 10, key: 'value', name: '价值排序',
+            icon: '⚖️',
+            statement: '"我清楚地知道自己最看重什么，不会随波逐流。"',
+            sub: '你的价值观，是自己定义的，还是被环境灌输的？',
+            options: [
+                { text: '价值观清晰独立，不被他人的标准绑架', scores: {self:3,emotion:3,stress:3,social:2,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['boss','ctrl'] },
+                { text: '有自己的价值观，但偶尔会被外界影响', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我经常怀疑自己的价值观，不知道什么是对的', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['imsb','npc'] },
+                { text: '我没有价值观，或者说我的价值观就是没有价值观', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','chaos','npc'] }
+            ]
+        },
+        {
+            id: 11, key: 'identity', name: '身份认同',
+            icon: '🪪',
+            statement: '"我对自己是谁有稳定的认知，不会因为外界评价而动摇。"',
+            sub: '你是你命运的主人，还是别人嘴里的人？',
+            options: [
+                { text: '身份认同稳定。我是谁，由我自己定义', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['boss','edge'] },
+                { text: '大部分时候清楚，偶尔会被别人的评价影响', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我会根据别人的眼光调整自己，活在别人的期待里', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['fake','npc','imsb'] },
+                { text: '我不知道我是谁，我觉得我是所有人的集合，唯独不是我', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','fake','???'] }
+            ]
+        },
+        {
+            id: 12, key: 'resilience', name: '心理韧性',
+            icon: '🛡️',
+            statement: '"遭遇挫折后，我能较快恢复，不会被失败定义。"',
+            sub: '你是打不死的小强，还是一蹶不振的落汤鸡？',
+            options: [
+                { text: '抗挫能力极强。跌倒了我会爬起来，越挫越勇', scores: {self:3,emotion:3,stress:3,social:2,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['boss','pro'] },
+                { text: '能恢复，但需要一点时间', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '一次挫折能让我消沉很久，我很难走出来', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['imsb','dead'] },
+                { text: '挫折对我来说就是毁灭，我爬不起来', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','addict','???'] }
+            ]
+        },
+        {
+            id: 13, key: 'defense', name: '防御机制',
+            icon: '🎭',
+            statement: '"我面对冲突和威胁时，倾向于建设性的应对方式。"',
+            sub: '你面对冲突，是正面迎战、巧妙化解，还是逃避、攻击？',
+            options: [
+                { text: '我能成熟地处理冲突，不会伤害自己也不会伤害关系', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['heal','ctrl'] },
+                { text: '大部分时候能应对，少数情况会情绪化', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我会用冷暴力、阴阳怪气或者逃避来处理冲突', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['witch','ghost'] },
+                { text: '冲突来了我就崩溃，或者直接攻击他人', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','chaos'] }
+            ]
+        },
+        {
+            id: 14, key: 'life', name: '生活状态',
+            icon: '🌿',
+            statement: '"我的日常生活有秩序，有意义，不是浑浑噩噩地活着。"',
+            sub: '你的生活，是有序运转，还是一片狼藉？',
+            options: [
+                { text: '生活有序，有目标，有意义感，每天都在向前走', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['boss','ctrl'] },
+                { text: '生活基本有序，偶尔会乱，但整体可控', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '生活混乱，感觉每天都在混日子，没有意义', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['malo','zzz','dead'] },
+                { text: '我只是在呼吸，不是活着', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['dead','addict'] }
+            ]
+        },
+        {
+            id: 15, key: 'addict', name: '成瘾倾向',
+            icon: '💀',
+            statement: '"我能健康地处理欲望和依赖，不会用某种东西麻痹自己。"',
+            sub: '你有什么逃避现实的出口吗？烟、酒、游戏、短视频、食物……',
+            options: [
+                { text: '没有成瘾问题。我能自由地掌控自己的注意力', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['ctrl'] },
+                { text: '偶尔会沉迷某件事，但能自己控制', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
+                { text: '我有一些依赖，比如短视频、烟、酒或者游戏', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['drunk','zzz'] },
+                { text: '我需要某些东西才能感觉好一点，否则无法面对生活', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['drunk','dead','addict'] },
                 isEasterEgg: true
-            }
-        ];
+            ]
+        }
+    ];
 
-        // ==================== 人格类型数据 ====================
-        const personalityTypes = {
-            ZZZ: {
-                name: "装死专家",
-                description: "对世界大声说\"不\"，但对deadline说\"好的\"",
-                quote: "\"不是我想摆烂，是这个世界不配让我努力。\"",
-                traits: ["战略性摸鱼", "deadline驱动型", "已读不回专业户", "能躺着绝不坐着"],
-                self: "你是那种嘴上说着无所谓，心里却小剧场连轴转的人",
-                emotion: "你的感情模式是：能躲则躲，躲不了就装死",
-                attitude: "你的人生哲学是：差不多得了，别太认真",
-                action: "你的执行力是：DDL是第一生产力，没有DDL就没有伤害",
-                social: "你的社交模式是：线上话痨，线下哑巴"
-            },
-            MALO: {
-                name: "牛马打工人",
-                description: "天选牛马，命里缺钱，但精神在热带雨林",
-                quote: "\"我的灵魂在热带雨林荡秋千，我的肉体在公司敲键盘。\"",
-                traits: ["带薪蹲坑冠军", "周一综合征晚期", "工资到手还花呗", "精神状态be like周末才活着"],
-                self: "你是那种清醒地知道自己不想上班，但还是会准时打卡的人",
-                emotion: "你对感情的态度：等我有空了再谈恋爱（永远没空）",
-                attitude: "你的世界观：上班就是为了下班，周末才是真正的人生",
-                action: "你的执行力：周一到周五浑水摸鱼，周六周日疯狂补觉",
-                social: "你的社交：同事就是同事，不可能的变成朋友的"
-            },
-            CTRL: {
-                name: "拿捏大师",
-                description: "掌控一切，除了体重和发际线",
-                quote: "\"我不是卷王，我只是不喜欢失控的感觉。\"",
-                traits: ["计划表狂魔", "时间管理大师", "细节控本控", "永远有Plan B"],
-                self: "你是那种出门旅游都要做50页攻略的人，生活在你手里被安排得明明白白",
-                emotion: "你的感情模式是：一切都得按计划来，包括什么时候心动",
-                attitude: "你的世界观：凡事预则立，不预则废",
-                action: "你的执行力：说几点就几点，迟到一分钟都是罪过",
-                social: "你的社交：朋友里的话事人，大家有事都找你商量"
-            },
-            ATM: {
-                name: "人形ATM",
-                description: "付出型人格，支付宝到账永远响的不是自己的",
-                quote: "\"没事没事，我来付。你们玩得开心就好。\"",
-                traits: ["钱包永远为他人敞开", "不好意思拒绝人", "请客专业户", "自己的需求永远放最后"],
-                self: "你是那种宁愿委屈自己也要让别人舒服的人，讨好型人格本格",
-                emotion: "你对感情的态度：全身心投入，不留余地，经常被发好人卡",
-                attitude: "你的世界观：付出就会有回报（真的吗？）",
-                action: "你的执行力：别人的事比自己的事重要，永远先顾别人",
-                social: "你的社交：朋友圈里的老好人，有事第一个冲，没事最后才想到"
-            },
-            IMSB: {
-                name: "内耗之王",
-                description: "精神状态：没事没事没事有事有事没事",
-                quote: "\"我是不是说错话了？他怎么不回我了？是不是我哪里做得不好？\"",
-                traits: ["想太多本多", "自我反省大师", "敏感体质", "容易emo"],
-                self: "你是那种发消息要犹豫半小时，发完还要后悔的人，想太多是刻在DNA里的",
-                emotion: "你的感情模式：想靠近又怕被拒绝，想放手又舍不得",
-                attitude: "你的世界观：每天都在自我怀疑和自我肯定之间反复横跳",
-                action: "你的执行力：还没开始行动就已经在脑内演了八百集连续剧",
-                social: "你的社交：小心翼翼维护关系，生怕说错一句话"
-            },
-            DEAD: {
-                name: "已逝人士",
-                description: "肉体还在呼吸，灵魂早已圆寂",
-                quote: "\"周一：不想活 周二：不想活 周三：不想活 周四：还是算了\"",
-                traits: ["行尸走肉本走", "对一切失去兴趣", "间歇性想死持续性想躺", "没有快乐也没有悲伤"],
-                self: "你是那种对生活失去热情，看什么都淡淡的，活着就是为了活着",
-                emotion: "你的感情状态：爱咋咋地，反正最后都会失望",
-                attitude: "你的世界观：人生就是一场大型无聊真人秀",
-                action: "你的执行力：能不动就不动，动也是被逼的",
-                social: "你的社交：朋友约不动，社交没兴趣，一个人挺好"
-            },
-            JOKE: {
-                name: "小丑本丑",
-                description: "气氛组组长，自己的笑话自己买单",
-                quote: "\"大家开心就好，我笑着笑着就习惯了。\"",
-                traits: ["社交润滑剂", "冷场终结者", "用玩笑掩饰尴尬", "所有人的树洞"],
-                self: "你是那种用笑容掩盖一切的人，看起来永远开心，其实只是不想让别人担心",
-                emotion: "你的感情模式：越在乎越要装作不在乎，用玩笑试探真心",
-                attitude: "你的世界观：与其让大家尴尬，不如让我来搞笑",
-                action: "你的执行力：答应别人的事从不食言，除了自己的事",
-                social: "你的社交：朋友很多，知心很少，大家都觉得你没烦恼"
-            },
-            BOSS: {
-                name: "卷王本王",
-                description: "不是我卷，是你们太菜",
-                quote: "\"你不卷你怎么知道自己有多强？早上5点起来跑个步不过分吧？\"",
-                traits: ["工作狂本狂", "自律到变态", "效率怪物", "永远在学习"],
-                self: "你是那种把别人用来休息的时间都用来提升自己的人，自律是你的标签",
-                emotion: "你的感情模式：没时间谈恋爱，工作就是我的爱人",
-                attitude: "你的世界观：优秀是一种习惯，躺平是对生命的浪费",
-                action: "你的执行力：想到就做，从不拖延，永远比别人快一步",
-                social: "你的社交：圈子很小，社交都是功能性社交"
-            },
-            SOLO: {
-                name: "孤独选手",
-                description: "一个人吃饭一个人看电影一个人过双十一",
-                quote: "\"一个人挺好，只是有时候会有点...好吧其实一直都有点。\"",
-                traits: ["独居达人", "电影搭子=自己", "外卖只点一人份", "习惯性单身"],
-                self: "你是那种已经习惯一个人生活，偶尔羡慕情侣，大多时候庆幸自由",
-                emotion: "你的感情状态：间歇性想谈恋爱，持续性享受单身",
-                attitude: "你的世界观：低质量的社交不如高质量的独处",
-                action: "你的执行力：一个人的事，能拖就拖，反正也没人管",
-                social: "你的社交：朋友不多，但每一个都是真朋友"
-            },
-            THINK: {
-                name: "想太多星人",
-                description: "一件事想三天，一个选择分析八种后果",
-                quote: "\"这个方案...我觉得可能...但是...万一...所以...还是再想想吧\"",
-                traits: ["选择困难症", "纠结本纠", "计划赶不上变化", "三思而后行"],
-                self: "你是那种买件衣服都要纠结颜色款式价格的人，想太多已经成了本能",
-                emotion: "你的感情模式：还没开始就已经想到了分手后的场景",
-                attitude: "你的世界观：任何决定都要深思熟虑，冲动的决定一定会后悔",
-                action: "你的执行力：想得多做得少，完美主义晚期患者",
-                social: "你的社交：害怕冲突，经常妥协，只想维持peace"
-            },
-            GHOST: {
-                name: "幽灵社恐",
-                description: "可以在线活跃三天不下线，见面讲话结巴三天",
-                quote: "\"网上：话痨本痨 线下：哑巴本哑\"",
-                traits: ["社交恐惧症", "打字如飞见面死机", "能不见面就不见面", "线上社牛线下社恐"],
-                self: "你是那种在网络上重拳出击，现实中唯唯诺诺的人，屏幕给了你勇气",
-                emotion: "你的感情模式：暗恋都是网恋，见面就怂",
-                attitude: "你的世界观：社交是一件消耗能量的事，独处才是充电",
-                action: "你的执行力：线上任务准时完成，线下邀约永远有事",
-                social: "你的社交：朋友都在网上，线下零社交"
-            },
-            NPC: {
-                name: "路人甲",
-                description: "没有主角光环，没有台词，没有人在乎",
-                quote: "\"存在感这种东西，我好像从来没有过...\"",
-                traits: ["背景板本板", "容易被遗忘", "随大流", "低调到尘埃里"],
-                self: "你是那种在人群中会自动隐身的人，不争不抢，没有存在感",
-                emotion: "你的感情状态：被喜欢的人注意不到，喜欢你的人找不到你",
-                attitude: "你的世界观：平凡也是一种幸福（虽然有时候挺不甘心的）",
-                action: "你的执行力：跟着大部队走，不领先也不落后",
-                social: "你的社交：朋友不少，但都是泛泛之交"
-            },
-            WITCH: {
-                name: "阴阳大师",
-                description: "表面\"好的呢\"，内心\"MMP\"",
-                quote: "\"好的呢亲～（内心：滚）\"",
-                traits: ["表面功夫满分", "内心戏丰富", "阴阳怪气本气", "嘴甜心狠"],
-                self: "你是那种表面笑嘻嘻，背后MMP的人，情绪管理能力满分",
-                emotion: "你的感情模式：嘴上说不在乎，心里门儿清",
-                attitude: "你的世界观：做人嘛，最重要的是开心（假的）",
-                action: "你的执行力：能拖就拖，反正表面功夫要做好",
-                social: "你的社交：人缘不差，因为没人知道你真实想法"
-            },
-            FAKE: {
-                name: "人设表演艺术家",
-                description: "三分演七分装，三秒不演浑身难受",
-                quote: "\"今天的人设是：积极向上的打工人。请为我鼓掌。\"",
-                traits: ["人设达人", "精分选手", "每条朋友圈都是精心策划", "活在别人的眼光里"],
-                self: "你是那种活在他人期待中的人，永远在表演最完美的自己",
-                emotion: "你的感情状态：不确定自己的感觉是真的还是演的",
-                attitude: "你的世界观：人设不能崩，形象很重要",
-                action: "你的执行力：形象管理比实际工作还重要",
-                social: "你的社交：朋友很多，但不知道有多少是真朋友"
-            },
-            POOR: {
-                name: "穷鬼本鬼",
-                description: "不是不努力，是钱总在奇怪的地方消失",
-                quote: "\"工资发下来-还花呗-还信用卡-钱包：你好，我是你的钱包，空的\"",
-                traits: ["月光族本族", "理财绝缘体", "总在哭穷", "花呗永久居民"],
-                self: "你是那种永远不知道自己钱花哪了，但就是没钱的人",
-                emotion: "你的感情态度：穷都不怕还怕失恋？（其实还是怕的）",
-                attitude: "你的世界观：钱不是万能的，但没有钱是万万不能的",
-                action: "你的执行力：省钱的时候执行力最强，其他时候随缘",
-                social: "你的社交：聚会能推就推，毕竟AA也要钱"
-            },
-            HEAL: {
-                name: "治愈系天使",
-                description: "朋友哭他递纸，朋友笑他买单",
-                quote: "\"没关系，我在这里。\"",
-                traits: ["最佳倾听者", "情绪稳定大师", "默默付出", "朋友们的避风港"],
-                self: "你是那种总是照顾别人情绪的人，温暖是刻在骨子里的",
-                emotion: "你的感情模式：付出型爱情，被伤害了还是会原谅",
-                attitude: "你的世界观：世界以痛吻我，我要报之以歌",
-                action: "你的执行力：答应别人的事一定做到，自己的事往后排",
-                social: "你的社交：朋友圈里的情感导师，自己的问题却不知道怎么解决"
-            },
-            DRUNK: {
-                name: "酒鬼",
-                description: "何以解忧？唯有杜康",
-                quote: "\"我没醉，我只是进入了另一种清醒状态。\"",
-                traits: ["借酒消愁", "酒后吐真言", "酒量不行酒胆大", "戒酒宣言永远在下周一"],
-                self: "你是那种需要酒精才能放松的人，酒是你逃避现实的工具",
-                emotion: "你的感情状态：清醒时说不出口的话，酒后全倒出来",
-                attitude: "你的世界观：人生太苦，不如喝酒",
-                action: "你的执行力：喝完酒第二天肯定废，一天都缓不过来",
-                social: "你的社交：酒桌上的朋友多，真心的朋友少"
-            },
-            CHAOS: {
-                name: "混沌使者",
-                description: "随机摇摆，看心情",
-                quote: "\"我也不知道我下一秒会怎样，包括我自己。\"",
-                traits: ["不稳定本定", "阴晴不定", "随机事件发生器", "自己都捉摸不透自己"],
-                self: "你是那种连自己都搞不懂自己的人，情绪和决定都看心情",
-                emotion: "你的感情模式：今天爱你明天可能就不爱了，不变的是一直在变",
-                attitude: "你的世界观：计划赶不上变化，变化赶不上心情",
-                action: "你的执行力：看情况，今天可能很勤快，明天可能躺一天",
-                social: "你的社交：朋友对你的评价永远是\"这人不好说\""
-            },
-            GOD: {
-                name: "全能之神",
-                description: "全方位优秀，极度稀有物种",
-                quote: "\"你们在卷什么？不是有手就行吗？\"",
-                traits: ["六边形战士", "全能选手", "别人家的孩子", "稀有SSR"],
-                self: "你是那种做什么都能做好的人，开挂般的人生不需要解释",
-                emotion: "你的感情状态：追求者众多，但你觉得都不太行",
-                attitude: "你的世界观：只要我想，没有做不到的事",
-                action: "你的执行力：自律即自由，执行力拉满到可怕",
-                social: "你的社交：高处不胜寒，普通人理解不了你"
-            },
-            RICH: {
-                name: "财神",
-                description: "有钱任性，任性有钱",
-                quote: "\"能用钱解决的问题都不是问题，解决不了的就是我不够有钱。\"",
-                traits: ["钞能力者", "不差钱", "理财达人", "钱生钱高手"],
-                self: "你是那种对钱有天赋的人，财商和收入都让别人望尘莫及",
-                emotion: "你的感情态度：爱情需要面包，你的面包够大所以选择很多",
-                attitude: "你的世界观：钱不是万能的，但确实能解决大部分问题",
-                action: "你的执行力：赚钱的时候执行力爆棚，其他时候一般般",
-                social: "你的社交：圈子不同不相为谋，社交也是投资"
-            },
-            LOVER: {
-                name: "恋爱脑",
-                description: "爱情是我的全部，我是爱情的一部分",
-                quote: "\"我可以单身，但我嗑的CP必须在一起。\"",
-                traits: ["爱情至上", "容易上头", "为爱痴狂", "偶像剧看多了"],
-                self: "你是那种一恋爱就上头的人，爱情是生活的全部意义",
-                emotion: "你的感情状态：全身心投入，掏心掏肺，容易受伤但下次还敢",
-                attitude: "你的世界观：有爱万事足，没爱活不了",
-                action: "你的执行力：恋爱时智商为零，决策全看对方喜好",
-                social: "你的社交：朋友都要靠边站，男朋友/女朋友才是第一位"
-            },
-            PRO: {
-                name: "执行力怪物",
-                description: "想到就做，从不拖延",
-                quote: "\"想太多是浪费时间，做就完了。\"",
-                traits: ["行动派本派", "雷厉风行", "拖延症绝缘体", "效率天花板"],
-                self: "你是那种决定了就立刻执行的人，拖延这个词不存在于你的字典",
-                emotion: "你的感情态度：喜欢就追，不墨迹，不行就换",
-                attitude: "你的世界观：想都是问题，做才是答案",
-                action: "你的执行力：执行力100分，想象力0分，想太少有时候也会踩坑",
-                social: "你的社交：高效社交，不废话，不废话"
-            },
-            EDGE: {
-                name: "边缘行者",
-                description: "游离于所有群体之外",
-                quote: "\"我不属于任何圈子，我就是我自己。\"",
-                traits: ["独来独往", "格格不入", "小众爱好者", "酷到没朋友"],
-                self: "你是那种不愿意被贴标签的人，追求独特，不随大流",
-                emotion: "你的感情态度：宁缺毋滥，没有合适的宁愿单身",
-                attitude: "你的世界观：圈子不同不必强融，做自己就好",
-                action: "你的执行力：按自己的节奏来，不被任何人催促",
-                social: "你的社交：朋友很少，但每一个都是精挑细选的"
-            },
-            "???": {
-                name: "神秘人格",
-                description: "测出的人自己都不知道自己是什么",
-                quote: "\"我也不知道我是什么，你们猜吧。\"",
-                traits: ["多重人格", "人格分裂", "时而是A时而是B", "自己也搞不懂自己"],
-                self: "你是那种连自己都搞不懂的人，今天和明天可能是完全不同的两个人",
-                emotion: "你的感情状态：时冷时热，让人捉摸不透",
-                attitude: "你的世界观：存在本身就是一种矛盾",
-                action: "你的执行力：看心情，看天气，看运气",
-                social: "你的社交：时而社牛时而社恐，没有人能真正了解你"
-            }
-        };
+    // ==================== 人格类型 ====================
+    const personalityTypes = {
+        DEAD: {
+            name: '已确诊·灵魂死亡', emoji: '💀',
+            desc: '你的精神状态已经到了需要紧急会诊的程度',
+            diagnosis: '经15维度深度扫描确认，你的灵魂已大面积阵亡。大脑处于<span>节能模式</span>，情感通道关闭，行动力归零，每天靠本能呼吸。建议：不是治疗，是抢救。',
+            traits: ['行尸走肉', '情感解离', '无意义感', '行动力归零'],
+            insights: [
+                {label:'自我诊断', text:'你不是懒，你是已经放弃了。你在精神上已经提前办理了退休手续。'},
+                {label:'情感诊断', text:'你的情感系统已经下线多年，不是不想感受，是感受系统已经损坏。'},
+                {label:'处方建议', text:'先活着。其他的以后再说。'}
+            ]
+        },
+        IMSB: {
+            name: '已确诊·重度内耗', emoji: '🌀',
+            desc: '你的大脑24小时不关机，永不停歇地自我攻击',
+            diagnosis: '扫描显示你的<span>内心战场</span>正在激烈交火。自我攻击、反复纠结、对他人看法的病态关注……你的精神内耗已经严重超负荷。需要立刻进行<span>心理干预</span>。',
+            traits: ['自我攻击', '高度敏感', '决策困难', '情绪过山车'],
+            insights: [
+                {label:'自我诊断', text:'你想太多做得太少。你脑子里每天上演的剧比Netflix还多，但你的人生还是第一集。'},
+                {label:'情感诊断', text:'你的情感系统处于高度戒备状态，对外界刺激的反应被过度放大。'},
+                {label:'处方建议', text:'学会「课题分离」——别人怎么看你，是别人的课题，不是你的。'}
+            ]
+        },
+        ATM: {
+            name: '已确诊·付出型依赖', emoji: '🏧',
+            desc: '你把自己的价值外包给了别人，从来不向内求',
+            diagnosis: '经确诊，你患有严重的<span>自我价值外部化</span>综合症。你的自尊系统需要通过他人的认可来供电，一旦没人认可，你就会觉得自己毫无价值。<span>边界感完全缺失</span>。',
+            traits: ['讨好型人格', '边界模糊', '价值外求', '不敢拒绝'],
+            insights: [
+                {label:'自我诊断', text:'你在用付出换取爱，但这不是爱，是交易。你要的不是被爱，是被需要。'},
+                {label:'情感诊断', text:'你的情感依附模式属于「焦虑型依附」，需要通过不断付出来确认自己的存在。'},
+                {label:'处方建议', text:'从说「不」开始。你的「不」，是你送给自己最好的礼物。'}
+            ]
+        },
+        MALO: {
+            name: '已确诊·牛马综合症', emoji: '🐴',
+            desc: '你的肉体在工位，灵魂早已逃往热带雨林',
+            diagnosis: '扫描显示你患有典型的<span>职场行尸走肉综合症</span>。周一到周五你是公司资产，周六周日才短暂恢复「人类」状态。你的精神正在<span>非二元死亡</span>。',
+            traits: ['周一焦虑', '周五短暂复活', '精神热带雨林', '带薪蹲坑冠军'],
+            insights: [
+                {label:'自我诊断', text:'你清醒地知道你不想上班，但你清醒地选择了继续上班。这叫「清醒的沉沦」。'},
+                {label:'情感诊断', text:'你的情感需求被严重压抑，你把所有的生命力都消耗在了无意义的工作循环中。'},
+                {label:'处方建议', text:'在工作之外，找到一件能让你感受到「活着」的事情。哪怕是养一盆花。'}
+            ]
+        },
+        ZZZ: {
+            name: '已确诊·低功耗模式', emoji: '🔋',
+            desc: '你的身体在运行，但你的大脑已经进入了深度省电模式',
+            diagnosis: '经确诊，你的<span>精神电量</span>已低于5%。你在用最小能耗维持生命体征。你的行动系统进入了<span>紧急节能</span>模式，任何需要能量的事都会被系统拒绝。',
+            traits: ['选择性失联', 'DDL驱动', '社交隐身', '周末才开机'],
+            insights: [
+                {label:'自我诊断', text:'你不是不想动，是你的系统已经被榨干了。节能不是懒惰，是最后的自我保护。'},
+                {label:'情感诊断', text:'你的情感已经习惯了不回应，因为回应需要能量，而你已经没有多余的能量了。'},
+                {label:'处方建议', text:'允许自己休息，不需要理由。你的身体已经在尖叫了，你听到了吗？'}
+            ]
+        },
+        CTRL: {
+            name: '已确诊·控制狂倾向', emoji: '🎛️',
+            desc: '你控制一切，因为失控让你极度恐惧',
+            diagnosis: '扫描显示你患有严重的<span>失控焦虑综合症</span>。你对生活的每一个细节都实施严格控制，因为任何不确定性都会触发你的<span>恐慌系统</span>。完美主义是你的保护壳，也是你的牢笼。',
+            traits: ['计划狂魔', '完美主义', '时间管理强迫', '不接受意外'],
+            insights: [
+                {label:'自我诊断', text:'你不是在掌控生活，你是在用掌控感来掩盖对生活的恐惧。失控并不可怕，恐惧失控才可怕。'},
+                {label:'情感诊断', text:'你在感情中也一样，你需要掌控一切，这让你很难真正享受亲密关系中的不确定性和惊喜。'},
+                {label:'处方建议', text:'偶尔失控一次，看看会发生什么。地球不会毁灭，太阳照常升起。'}
+            ]
+        },
+        GHOST: {
+            name: '已确诊·社交幽灵', emoji: '👻',
+            desc: '你存在于所有社交场合，却不真正存在于任何关系里',
+            diagnosis: '经确诊，你患有<span>社交解离综合症</span>。你能完美扮演社交角色，但真实的你从未出场。你是所有人的熟人，却不是任何人的朋友。<span>存在感焦虑</span>是你最深的伤口。',
+            traits: ['选择性在场', '真实自我隐形', '关系浅薄', '回避深度'],
+            insights: [
+                {label:'自我诊断', text:'你害怕被看到，因为被看到意味着可能被拒绝。所以你选择了永远不被看到。'},
+                {label:'情感诊断', text:'你的情感连接处于「假联机」状态，信号满格但无实际数据传输。'},
+                {label:'处方建议', text:'选择一个你信任的人，冒一次险，展露一点真实的自己。'}
+            ]
+        },
+        WITCH: {
+            name: '已确诊·阴阳双人格', emoji: '🎭',
+            desc: '表面微笑内心骂街，你是当代最精分的物种',
+            diagnosis: '扫描显示你患有严重的<span>双重人格分裂</span>。你的表层人格温文尔雅，内心人格已经把你这辈子能骂的人都骂了一遍。<span>情绪劳动严重超支</span>，真实的你正在被压抑到快要窒息。',
+            traits: ['表面一套', '内心一套', '情绪劳动', '真实自我被压'],
+            insights: [
+                {label:'自我诊断', text:'你活得太累了。你用精力去维护表面的和平，却把自己的真实感受完全忽略。'},
+                {label:'情感诊断', text:'你的真实情绪从未被表达，它们只能以阴阳怪气的方式偷偷泄露出来。'},
+                {label:'处方建议', text:'找个安全的地方，把你想骂的话全部说出来。不需要发给任何人，说给自己听就行。'}
+            ]
+        },
+        BOSS: {
+            name: '已确诊·卷王三期', emoji: '🏆',
+            desc: '你不卷谁卷，但你的卷是在逃避另一种恐惧',
+            diagnosis: '经确诊，你患有<span>成就依赖综合症</span>。你的自我价值完全绑定在成就上，你用忙碌来填满生活的每一个缝隙，因为一旦停下来，你就要面对<span>存在性焦虑</span>。',
+            traits: ['成就驱动', '恐惧空闲', '自律强迫', '工作狂'],
+            insights: [
+                {label:'自我诊断', text:'你不是真的热爱工作，你只是不敢停下来。停下来意味着面对自己，而面对自己是最难的事。'},
+                {label:'情感诊断', text:'你没有时间谈恋爱，因为谈恋爱需要你放下控制，这让你恐惧。'},
+                {label:'处方建议', text:'试着什么都不做十分钟，感受那种焦虑，然后观察它。焦虑不是敌人，你躲避焦虑的方式才是。'}
+            ]
+        },
+        FAKE: {
+            name: '已确诊·人设成瘾', emoji: '🎪',
+            desc: '你已经分不清哪个是真实的你，因为你从来不演真实的你',
+            diagnosis: '扫描显示你患有<span>人格分裂边缘型</span>综合症。你活在他人的目光中，永远在扮演「更好的自己」。真实的你躲在人设后面，<span>从未出场</span>。你已经很久没有做真实的自己了。',
+            traits: ['人设表演', '活在他人眼中', '真实自我消失', '认同感外求'],
+            insights: [
+                {label:'自我诊断', text:'你赢得了他人的掌声，却输掉了自己的认同。你活在聚光灯下，却永远在黑暗中。'},
+                {label:'情感诊断', text:'你连自己的情感都搞不清楚，因为你习惯了扮演「应该有的情感」，而非「真实的情感」。'},
+                {label:'处方建议', text:'关掉朋友圈三天，不扮演任何人，看看会发生什么。你会发现，没人在看你，你只是太想被看了。'}
+            ]
+        },
+        THINK: {
+            name: '已确诊·决策瘫痪', emoji: '🧩',
+            desc: '你在想，但你的想永远没有终点',
+            diagnosis: '经确诊，你患有<span>分析瘫痪症</span>。你的大脑是一个永不停止的分析机器，任何决定都要经过无数假设推演。你用「想清楚」来逃避「做决定」，因为<span>行动意味着承担责任</span>。',
+            traits: ['选择困难', '想太多', '完美主义', '行动瘫痪'],
+            insights: [
+                {label:'自我诊断', text:'你不是在思考，你是在用思考来逃避行动。思考是安全的，行动是有风险的。'},
+                {label:'情感诊断', text:'你在感情中也一样：还没开始，就已经想好了分手后的场景。你永远不会开始。'},
+                {label:'处方建议', text:'不要想清楚再行动，行动会帮你想清楚。完成比完美重要。'}
+            ]
+        },
+        DRUNK: {
+            name: '已确诊·成瘾依赖', emoji: '🍺',
+            desc: '你需要某种东西来麻痹自己，否则无法面对现实',
+            diagnosis: '经15维度深度扫描并触发隐藏指标，你的核心问题是<span>成瘾依赖综合症</span>。烟、酒、游戏、短视频……你有某种让你逃避现实的出口，而那个出口正在<span>悄悄吞噬你</span>。这不是享受，这是自救。',
+            traits: ['逃避现实', '成瘾依赖', '压力转移', '功能受损'],
+            insights: [
+                {label:'自我诊断', text:'你不是喜欢喝酒，你只是喝酒的时候才不用面对自己。不喝酒的世界太难以承受。'},
+                {label:'情感诊断', text:'你用成瘾行为来调节情绪，但成瘾本身正在毁掉你的情绪调节能力。'},
+                {label:'处方建议', text:'这不是意志力的问题，是你的心理需求没有被满足。寻求专业帮助不是软弱，是对自己负责。'}
+            ]
+        },
+        CHAOS: {
+            name: '已确诊·混沌状态', emoji: '🌀',
+            desc: '你自己都不知道自己下一秒会怎样，包括你自己',
+            diagnosis: '经确诊，你处于<span>人格解离状态</span>。你的内核不稳定，你的行为、情绪、决定都高度依赖于外部环境。你没有稳定的自我，你的整个系统都处于<span>随机波动</span>之中。',
+            traits: ['不稳定', '阴晴不定', '随机行为', '自我模糊'],
+            insights: [
+                {label:'自我诊断', text:'你连自己都搞不懂自己，因为你没有一个稳定的内核。你是一面镜子，映照的是周围环境的颜色。'},
+                {label:'情感诊断', text:'你的感情模式是：今天爱你明天可能恨你。你爱的是自己的感受，不是那个人。'},
+                {label:'处方建议', text:'找到一件你稳定感兴趣的事，建立稳定的自我感。这需要时间，但值得。'}
+            ]
+        },
+        HEAL: {
+            name: '已确诊·治愈型人格', emoji: '🌿',
+            desc: '你是所有人的避风港，但你自己没有港湾',
+            diagnosis: '扫描显示你属于<span>过度给予型人格</span>。你是朋友圈里的情绪导师、树洞和治愈系天使。但你的<span>自我需求被完全忽略</span>，你一直在给别人撑伞，自己却淋着雨。',
+            traits: ['过度给予', '自我忽略', '边界模糊', '照顾者疲惫'],
+            insights: [
+                {label:'自我诊断', text:'你在照顾别人的时候感到被需要，这是你价值感的来源。但被需要不等于被爱。'},
+                {label:'情感诊断', text:'你很难表达自己的需求，因为你习惯了先满足别人。这让你在人际关系中总是吃亏的那一个。'},
+                {label:'处方建议', text:'下次有人找你倾诉，先问自己：我需要什么？你的需要和别人的需要一样重要。'}
+            ]
+        },
+        SOLO: {
+            name: '已确诊·独居综合', emoji: '🏝️',
+            desc: '一个人很好，但「一个人很好」这句话你说了多少次了？',
+            diagnosis: '经确诊，你患有<span>选择性孤独依赖</span>。你已经习惯了一个人，虽然偶尔会感到孤独，但更害怕的是被拒绝。你用「一个人挺好」来<span>保护自己免受被抛弃的恐惧</span>。',
+            traits: ['习惯性独处', '社交回避', '害怕被拒', '间歇性孤独'],
+            insights: [
+                {label:'自我诊断', text:'独处是你的舒适区，但你选择独处的原因是恐惧，不是偏好。'},
+                {label:'情感诊断', text:'你心里住着一个很想被爱的小孩，但他被你锁起来了，因为你怕他出来会被伤害。'},
+                {label:'处方建议', text:'下次孤独感来袭，不要用「一个人挺好」来压它。承认它，感受它，然后看看它想告诉你什么。'}
+            ]
+        },
+        NPC: {
+            name: '已确诊·NPC状态', emoji: '🎮',
+            desc: '你没有主线剧情，你只是这个世界的背景板',
+            diagnosis: '扫描显示你处于<span>存在感缺失综合症</span>。你随波逐流，没有立场，没有声音，在人群中自动隐身。你告诉自己平凡是福，但心底<span>偶尔会涌起强烈的不甘</span>。',
+            traits: ['随大流', '无存在感', '被忽略', '压抑不甘'],
+            insights: [
+                {label:'自我诊断', text:'你不是没有想法，你只是不敢表达。表达意味着被看见，被看见意味着可能被评判。'},
+                {label:'情感诊断', text:'你习惯被动的情感模式：等待别人来找你，因为你不敢主动。'},
+                {label:'处方建议', text:'在一个安全的场合，说出你的一个真实想法。不需要说服任何人，只是说出来。'}
+            ]
+        },
+        '???': {
+            name: '已确诊·多重人格', emoji: '🪞',
+            desc: '今天的你和昨天的你，是同一个人吗？',
+            diagnosis: '经确诊，你属于<span>人格不稳定谱系</span>。你的自我在不同场景、不同关系中呈现出完全不同的版本。你时而社牛时而社恐，时而积极时而消极，<span>没有稳定的自我核心</span>。',
+            traits: ['多副面孔', '时冷时热', '不稳定自我', '难以捉摸'],
+            insights: [
+                {label:'自我诊断', text:'你活成了变色龙，环境让你变成什么颜色你就是什么颜色。真实的你藏在所有颜色的后面。'},
+                {label:'情感诊断', text:'你在感情中也是不稳定的：时而热烈时而冷淡，让对方也无所适从。'},
+                {label:'处方建议', text:'找一个安静的时刻，问自己：剥离了所有角色和关系之后，我是谁？找到这个答案，你的人格就会稳定下来。'}
+            ]
+        },
+        RICH: {
+            name: '已确诊·财商觉醒', emoji: '💰',
+            desc: '钱是你安全感的最大来源，但你真的缺的是钱吗？',
+            diagnosis: '扫描显示你患有<span>金钱焦虑依赖</span>。你对财务安全感的追求已经超出了实际需求，你的金钱行为背后是<span>深层的生存恐惧</span>和对未来的不确定感。',
+            traits: ['金钱至上', '安全感外求', '理财强迫', '未来焦虑'],
+            insights: [
+                {label:'自我诊断', text:'你拼命赚钱不是因为你热爱钱，而是因为钱是你唯一信任的安全感来源。'},
+                {label:'情感诊断', text:'你在感情中也会用金钱来表达爱，因为你不相信语言和情感能带来安全感。'},
+                {label:'处方建议', text:'除了赚钱，你需要建立其他的心理安全感来源。否则你赚多少都不够。'}
+            ]
+        },
+        LOVER: {
+            name: '已确诊·恋爱脑晚期', emoji: '💘',
+            desc: '爱情是你的氧气瓶，没有爱情你就活不下去',
+            diagnosis: '扫描显示你患有<span>情感依赖综合症</span>。你的自我价值完全绑定在他人身上，尤其在恋爱关系中。你需要被人爱才能感到自己值得被爱，<span>你的喜怒哀乐完全由对方决定</span>。',
+            traits: ['爱情至上', '自我价值外求', '情感依赖', '边界全无'],
+            insights: [
+                {label:'自我诊断', text:'你在爱情里丢了自己。你以为你爱的是那个人，其实你爱的是有人爱你这件事。'},
+                {label:'情感诊断', text:'你的依附模式是「焦虑型依附」，你害怕被抛弃，害怕不被爱，这让你在感情中不断索取。'},
+                {label:'处方建议', text:'在你爱上任何人之前，先学会爱自己。一个不爱自己的人，给不出真正的爱。'}
+            ]
+        },
+        PRO: {
+            name: '已确诊·行动力过载', emoji: '⚡',
+            desc: '你是行动派，但你从来不问为什么要行动',
+            diagnosis: '扫描显示你属于<span>行动逃避型人格</span>。你想得少做得快，用行动来填满一切思考的时间。这让你效率极高，但<span>深度思考和内省能力严重不足</span>。',
+            traits: ['行动强迫', '逃避内省', '效率至上', '深度不足'],
+            insights: [
+                {label:'自我诊断', text:'你不是在行动，你是在用行动来逃避思考。因为思考意味着面对自己，而你想太多会崩溃。'},
+                {label:'情感诊断', text:'你在感情中也一样：喜欢就追，不行就换。你没有给自己和对方深度连接的时间。'},
+                {label:'处方建议', text:'偶尔停下来，什么都不做，看看你的脑子会想什么。直面自己的内心，是成长的开始。'}
+            ]
+        },
+        EDGE: {
+            name: '已确诊·游离边缘', emoji: '🌑',
+            desc: '你不属于任何圈子，也不属于人群',
+            diagnosis: '扫描显示你属于<span>游离型人格</span>。你格格不入，不愿被定义，不愿被归类。你有自己的小宇宙，但这个宇宙有时候<span>太孤独了</span>。',
+            traits: ['独来独往', '拒绝归属', '独特自我', '孤独感'],
+            insights: [
+                {label:'自我诊断', text:'你追求独特是因为你害怕被同质化，害怕失去自己。但有时候，拒绝一切也是一种逃避。'},
+                {label:'情感诊断', text:'你的孤独不是没有人懂你，而是你不愿意让别人懂你。'},
+                {label:'处方建议', text:'找一个你信任的人，试着让人靠近一点点。独特和归属不矛盾。'}
+            ]
+        },
+        JOKE: {
+            name: '已确诊·小丑面具', emoji: '🃏',
+            desc: '你是所有人的开心果，但你自己的眼泪从不被人看见',
+            diagnosis: '扫描显示你患有<span>幽默防御综合症</span>。你用笑容掩盖一切，用幽默来化解尴尬。你的笑是武器，也是盾牌。<span>真实的你躲在笑话后面，从来没有被真正看到</span>。',
+            traits: ['幽默防御', '隐藏悲伤', '照顾者角色', '真实自我隐藏'],
+            insights: [
+                {label:'自我诊断', text:'你笑着笑着就习惯了，习惯了就再也哭不出来了。你的幽默是一种自我保护机制。'},
+                {label:'情感诊断', text:'你害怕让别人看到你的脆弱，因为你觉得脆弱会让人离开。但真正爱你的人，想要的是真实的你。'},
+                {label:'处方建议', text:'下次想哭的时候，不要用笑话转移话题。就哭出来，没关系的。'}
+            ]
+        }
+    };
 
-        // ==================== 状态管理 ====================
-        let currentQuestion = 0;
-        let answers = [];
-        let userScores = { self: 0, emotion: 0, attitude: 0, action: 0, social: 0 };
-        let tagCounts = {};
-        let drunkTriggered = false;
-        let alcoholOptions = 0;
+    // ==================== 状态 ====================
+    let currentQuestion = 0;
+    let answers = [];
+    let userScores = {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0};
+    let tagCounts = {};
+    let drunkTriggered = false;
+    let alcoholConfirm = false;
 
-        // ==================== 页面切换 ====================
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+    // ==================== 页面切换 ====================
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // ==================== 测试逻辑 ====================
+    function startTest() {
+        currentQuestion = 0; answers = [];
+        userScores = {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0};
+        tagCounts = {}; drunkTriggered = false; alcoholConfirm = false;
+        showPage('testPage');
+        buildDimIndicator();
+        renderQuestion();
+    }
+
+    function buildDimIndicator() {
+        const container = document.getElementById('dimIndicator');
+        container.innerHTML = '';
+        dimensions.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'dim-dot' + (i === 0 ? ' active' : '');
+            container.appendChild(dot);
+        });
+    }
+
+    function updateDimIndicator() {
+        const dots = document.querySelectorAll('.dim-dot');
+        dots.forEach((dot, i) => {
+            dot.className = 'dim-dot' + (i < currentQuestion ? ' done' : i === currentQuestion ? ' active' : '');
+        });
+    }
+
+    function renderQuestion() {
+        const dim = dimensions[currentQuestion];
+        document.getElementById('currentQ').textContent = currentQuestion + 1;
+        document.getElementById('currentQText').textContent = currentQuestion + 1;
+        document.getElementById('totalQ').textContent = dimensions.length;
+        document.getElementById('progressFill').style.width = (currentQuestion / dimensions.length * 100) + '%';
+
+        document.getElementById('dimTag').innerHTML = `${dim.icon} ${dim.name}`;
+        document.getElementById('statementText').textContent = dim.statement;
+        document.getElementById('statementSub').textContent = dim.sub;
+
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = '';
+        const checkmarks = ['✓', '✓', '✗', '✗'];
+        dim.options.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'option' + (answers[currentQuestion] === i ? ' selected' : '');
+            div.innerHTML = `
+                <span class="option-check">${answers[currentQuestion] === i ? '✓' : ''}</span>
+                <span class="option-text">${opt.text}</span>
+            `;
+            div.onclick = () => selectOption(i);
+            container.appendChild(div);
+        });
+
+        document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'flex' : 'none';
+        const isLast = currentQuestion === dimensions.length - 1;
+        document.getElementById('nextBtn').innerHTML = isLast
+            ? '生成确诊报告 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+            : '下一维 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+        updateDimIndicator();
+    }
+
+    function selectOption(index) {
+        const dim = dimensions[currentQuestion];
+        const opt = dim.options[index];
+
+        // 重新计算分数：先减去之前的
+        if (answers[currentQuestion] !== undefined) {
+            const prevOpt = dim.options[answers[currentQuestion]];
+            Object.keys(prevOpt.scores).forEach(k => userScores[k] -= prevOpt.scores[k]);
+            prevOpt.tags.forEach(t => { tagCounts[t] = (tagCounts[t]||1) - 1; if(tagCounts[t]<=0) delete tagCounts[t]; });
         }
 
-        // ==================== 测试逻辑 ====================
-        function startTest() {
-            currentQuestion = 0;
-            answers = [];
-            userScores = { self: 0, emotion: 0, attitude: 0, action: 0, social: 0 };
-            tagCounts = {};
-            drunkTriggered = false;
-            alcoholOptions = 0;
-            showPage('testPage');
+        // 加上新的
+        Object.keys(opt.scores).forEach(k => userScores[k] += opt.scores[k]);
+        opt.tags.forEach(t => tagCounts[t] = (tagCounts[t]||0) + 1);
+        answers[currentQuestion] = index;
+
+        if (dim.isEasterEgg && (index === 2 || index === 3)) alcoholConfirm = true;
+
+        renderQuestion();
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
             renderQuestion();
         }
+    }
 
-        function renderQuestion() {
-            const q = questions[currentQuestion];
-            document.getElementById('currentQ').textContent = currentQuestion + 1;
-            document.getElementById('totalQ').textContent = questions.length;
-            document.getElementById('progressFill').style.width = ((currentQuestion) / questions.length * 100) + '%';
-            document.getElementById('questionNumber').textContent = 'Q' + (currentQuestion + 1);
-            document.getElementById('questionText').textContent = q.text;
-
-            const container = document.getElementById('optionsContainer');
-            container.innerHTML = '';
-
-            const letters = ['A', 'B', 'C', 'D'];
-            q.options.forEach((opt, index) => {
-                const div = document.createElement('div');
-                div.className = 'option' + (answers[currentQuestion] === index ? ' selected' : '');
-                div.innerHTML = `
-                    <span class="option-letter">${letters[index]}</span>
-                    <span class="option-text">${opt.text}</span>
-                `;
-                div.onclick = () => selectOption(index);
-                container.appendChild(div);
-            });
-
-            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'flex' : 'none';
-            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? '查看结果' : '下一题';
-            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
-            document.getElementById('nextBtn').innerHTML = (currentQuestion === questions.length - 1 ? '查看结果' : '下一题') + `
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>`;
+    function nextQuestion() {
+        if (answers[currentQuestion] === undefined) {
+            showToast('请确认你的情况');
+            return;
         }
-
-        function selectOption(index) {
-            answers[currentQuestion] = index;
-            const q = questions[currentQuestion];
-            const selectedOption = q.options[index];
-
-            // 累加分数
-            userScores.self += selectedOption.scores.self;
-            userScores.emotion += selectedOption.scores.emotion;
-            userScores.attitude += selectedOption.scores.attitude;
-            userScores.action += selectedOption.scores.action;
-            userScores.social += selectedOption.scores.social;
-
-            // 统计标签
-            selectedOption.tags.forEach(tag => {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-            });
-
-            // 检查酒鬼彩蛋
-            if (q.isEasterEgg && (index === 2 || index === 3)) {
-                alcoholOptions++;
-            }
-
+        if (currentQuestion < dimensions.length - 1) {
+            currentQuestion++;
             renderQuestion();
-        }
+        } else {
+            showPage('loadingPage');
+            if (alcoholConfirm) drunkTriggered = true;
 
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                // 撤销上一题的分数
-                if (answers[currentQuestion - 1] !== undefined) {
-                    const prevQ = questions[currentQuestion - 1];
-                    const prevOption = prevQ.options[answers[currentQuestion - 1]];
-                    userScores.self -= prevOption.scores.self;
-                    userScores.emotion -= prevOption.scores.emotion;
-                    userScores.attitude -= prevOption.scores.attitude;
-                    userScores.action -= prevOption.scores.action;
-                    userScores.social -= prevOption.scores.social;
-
-                    prevOption.tags.forEach(tag => {
-                        tagCounts[tag] = (tagCounts[tag] || 1) - 1;
-                        if (tagCounts[tag] <= 0) delete tagCounts[tag];
-                    });
-                }
-                currentQuestion--;
-                renderQuestion();
-            }
-        }
-
-        function nextQuestion() {
-            if (answers[currentQuestion] === undefined) {
-                showToast('请选择一个选项');
-                return;
-            }
-
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                renderQuestion();
-            } else {
-                // 完成测试，显示加载
-                showPage('loadingPage');
-
-                // 检查酒鬼彩蛋
-                if (alcoholOptions >= 2) {
-                    drunkTriggered = true;
-                }
-
-                // 显示加载提示
-                const tips = [
-                    '分析你的灵魂组成...',
-                    '计算你的发疯指数...',
-                    '匹配你的抽象人格...',
-                    '挖掘你的隐藏属性...',
-                    '生成你的人格报告...',
-                    '你在人群中是哪种存在...'
-                ];
-                let tipIndex = 0;
-                const loadingTip = document.getElementById('loadingTip');
-                const tipInterval = setInterval(() => {
-                    tipIndex = (tipIndex + 1) % tips.length;
-                    loadingTip.textContent = tips[tipIndex];
-                }, 800);
-
-                setTimeout(() => {
-                    clearInterval(tipInterval);
-                    calculateResult();
-                }, 2500);
-            }
-        }
-
-        // ==================== 结果计算 ====================
-        function calculateResult() {
-            const result = matchPersonality();
-
-            // 显示结果
-            showPage('resultPage');
-            document.getElementById('resultType').textContent = result.type;
-            document.getElementById('resultName').textContent = result.name;
-            document.getElementById('resultMatch').textContent = result.matchRate + '%';
-            document.getElementById('resultQuote').textContent = result.quote;
-
-            // 五维模型评分
-            const totalPossible = questions.length * 3; // 每维度最高3分
-            const selfPercent = Math.round(userScores.self / totalPossible * 100);
-            const emotionPercent = Math.round(userScores.emotion / totalPossible * 100);
-            const attitudePercent = Math.round(userScores.attitude / totalPossible * 100);
-            const actionPercent = Math.round(userScores.action / totalPossible * 100);
-            const socialPercent = Math.round(userScores.social / totalPossible * 100);
+            const loadingTexts = [
+                '扫描自我认知维度...', '分析情绪稳定状态...', '评估压力应对机制...',
+                '解析社交行为模式...', '检测现实感知能力...', '诊断情感依附类型...',
+                '检查边界意识水平...', '测量行动力指数...', '评估内心消耗程度...',
+                '分析价值排序体系...', '诊断身份认同状态...', '评估心理韧性强度...',
+                '检测防御机制类型...', '扫描生活状态指数...', '检测成瘾依赖倾向...',
+                '综合分析中...', '生成确诊报告...', '正在出具诊断书...'
+            ];
+            let idx = 0;
+            const subEl = document.getElementById('loadingSub');
+            const interval = setInterval(() => {
+                idx = Math.min(idx + 1, loadingTexts.length - 1);
+                subEl.textContent = loadingTexts[idx];
+            }, 200);
 
             setTimeout(() => {
-                document.getElementById('selfScore').textContent = selfPercent + '%';
-                document.getElementById('selfFill').style.width = selfPercent + '%';
-                document.getElementById('selfDesc').textContent = result.self;
-
-                document.getElementById('emotionScore').textContent = emotionPercent + '%';
-                document.getElementById('emotionFill').style.width = emotionPercent + '%';
-                document.getElementById('emotionDesc').textContent = result.emotion;
-
-                document.getElementById('attitudeScore').textContent = attitudePercent + '%';
-                document.getElementById('attitudeFill').style.width = attitudePercent + '%';
-                document.getElementById('attitudeDesc').textContent = result.attitude;
-
-                document.getElementById('actionScore').textContent = actionPercent + '%';
-                document.getElementById('actionFill').style.width = actionPercent + '%';
-                document.getElementById('actionDesc').textContent = result.action;
-
-                document.getElementById('socialScore').textContent = socialPercent + '%';
-                document.getElementById('socialFill').style.width = socialPercent + '%';
-                document.getElementById('socialDesc').textContent = result.social;
-
-                // 绘制雷达图
-                drawRadarChart(selfPercent, emotionPercent, attitudePercent, actionPercent, socialPercent);
-
-                // 显示相似人格
-                renderSimilarTypes(result.type);
-            }, 100);
-
-            // 检查彩蛋
-            if (drunkTriggered) {
-                setTimeout(() => {
-                    showEasterEgg('DRUNK');
-                }, 1500);
-            }
+                clearInterval(interval);
+                calculateResult();
+            }, 3500);
         }
+    }
 
-        function matchPersonality() {
-            const type = personalityTypes;
+    // ==================== 结果计算 ====================
+    function calculateResult() {
+        const result = matchPersonality();
+        showPage('resultPage');
 
-            // 计算总得分
-            const total = userScores.self + userScores.emotion + userScores.attitude + userScores.action + userScores.social;
-            const maxTotal = questions.length * 3 * 5;
-            const avgPercent = (total / maxTotal) * 100;
+        document.getElementById('resultType').textContent = result.type;
+        document.getElementById('resultName').textContent = result.name;
+        document.getElementById('resultMatch').textContent = result.matchRate + '%';
+        document.getElementById('diagnosisText').innerHTML = result.diagnosis;
 
-            // 计算各维度均衡性
-            const scores = [userScores.self, userScores.emotion, userScores.attitude, userScores.action, userScores.social];
-            const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-            const variance = scores.reduce((sum, s) => sum + Math.pow(s - avg, 2), 0) / scores.length;
-            const isChaotic = variance > 200; // 维度差异大
-
-            // 检查标签匹配
-            let bestMatch = null;
-            let bestScore = 0;
-
-            // 优先检查隐藏人格
-            if (drunkTriggered && alcoholOptions >= 2) {
-                return {
-                    type: 'DRUNK',
-                    name: type.DRUNK.name,
-                    quote: type.DRUNK.quote,
-                    matchRate: 88 + Math.floor(Math.random() * 10),
-                    self: type.DRUNK.self,
-                    emotion: type.DRUNK.emotion,
-                    attitude: type.DRUNK.attitude,
-                    action: type.DRUNK.action,
-                    social: type.DRUNK.social
-                };
-            }
-
-            if (tagCounts['poor'] >= 3) {
-                return {
-                    type: 'POOR',
-                    name: type.POOR.name,
-                    quote: type.POOR.quote,
-                    matchRate: 82 + Math.floor(Math.random() * 12),
-                    self: type.POOR.self,
-                    emotion: type.POOR.emotion,
-                    attitude: type.POOR.attitude,
-                    action: type.POOR.action,
-                    social: type.POOR.social
-                };
-            }
-
-            if (tagCounts['boss'] >= 4 && avgPercent > 60) {
-                return {
-                    type: 'BOSS',
-                    name: type.BOSS.name,
-                    quote: type.BOSS.quote,
-                    matchRate: 85 + Math.floor(Math.random() * 10),
-                    self: type.BOSS.self,
-                    emotion: type.BOSS.emotion,
-                    attitude: type.BOSS.attitude,
-                    action: type.BOSS.action,
-                    social: type.BOSS.social
-                };
-            }
-
-            if (tagCounts['ctrl'] >= 4) {
-                return {
-                    type: 'CTRL',
-                    name: type.CTRL.name,
-                    quote: type.CTRL.quote,
-                    matchRate: 83 + Math.floor(Math.random() * 12),
-                    self: type.CTRL.self,
-                    emotion: type.CTRL.emotion,
-                    attitude: type.CTRL.attitude,
-                    action: type.CTRL.action,
-                    social: type.CTRL.social
-                };
-            }
-
-            // 根据标签统计判断人格
-            const tagPriority = [
-                ['zzz', 'ZZZ', type.ZZZ],
-                ['dead', 'DEAD', type.DEAD],
-                ['malo', 'MALO', type.MALO],
-                ['imsb', 'IMSB', type.IMSB],
-                ['atm', 'ATM', type.ATM],
-                ['joke', 'JOKE', type.JOKE],
-                ['heal', 'HEAL', type.HEAL],
-                ['think', 'THINK', type.THINK],
-                ['ghost', 'GHOST', type.GHOST],
-                ['solo', 'SOLO', type.SOLO],
-                ['shit', 'SHIT', type.NPC], // 用NPC代替SHIT
-                ['witch', 'WITCH', type.WITCH],
-                ['fake', 'FAKE', type.FAKE],
-                ['npc', 'NPC', type.NPC],
-                ['chaos', 'CHAOS', type.CHAOS]
-            ];
-
-            let topTag = null;
-            let topCount = 0;
-            tagPriority.forEach(([tag, typeKey, typeData]) => {
-                if ((tagCounts[tag] || 0) > topCount) {
-                    topCount = tagCounts[tag];
-                    topTag = [typeKey, typeData];
-                }
-            });
-
-            if (topTag && topCount >= 2) {
-                const matchRate = Math.min(95, 70 + topCount * 8 + Math.floor(Math.random() * 10));
-                return {
-                    type: topTag[0],
-                    name: topTag[1].name,
-                    quote: topTag[1].quote,
-                    matchRate: matchRate,
-                    self: topTag[1].self,
-                    emotion: topTag[1].emotion,
-                    attitude: topTag[1].attitude,
-                    action: topTag[1].action,
-                    social: topTag[1].social
-                };
-            }
-
-            // 根据五维模型综合判断
-            if (isChaotic || avgPercent < 40) {
-                if (avgPercent > 30) {
-                    return {
-                        type: '???',
-                        name: type['???'].name,
-                        quote: type['???'].quote,
-                        matchRate: 75 + Math.floor(Math.random() * 10),
-                        self: type['???'].self,
-                        emotion: type['???'].emotion,
-                        attitude: type['???'].attitude,
-                        action: type['???'].action,
-                        social: type['???'].social
-                    };
-                }
-                return {
-                    type: 'DEAD',
-                    name: type.DEAD.name,
-                    quote: type.DEAD.quote,
-                    matchRate: 78 + Math.floor(Math.random() * 10),
-                    self: type.DEAD.self,
-                    emotion: type.DEAD.emotion,
-                    attitude: type.DEAD.attitude,
-                    action: type.DEAD.action,
-                    social: type.DEAD.social
-                };
-            }
-
-            if (avgPercent > 75) {
-                return {
-                    type: 'GOD',
-                    name: type.GOD.name,
-                    quote: type.GOD.quote,
-                    matchRate: 80 + Math.floor(Math.random() * 15),
-                    self: type.GOD.self,
-                    emotion: type.GOD.emotion,
-                    attitude: type.GOD.attitude,
-                    action: type.GOD.action,
-                    social: type.GOD.social
-                };
-            }
-
-            // 默认基于得分最高的维度
-            const maxDim = Object.entries(userScores).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-            const dimMap = {
-                'self': ['CTRL', type.CTRL],
-                'emotion': ['ATM', type.ATM],
-                'attitude': ['BOSS', type.BOSS],
-                'action': ['PRO', type.PRO],
-                'social': ['JOKE', type.JOKE]
-            };
-
-            const defaultType = dimMap[maxDim] || ['MALO', type.MALO];
-            return {
-                type: defaultType[0],
-                name: defaultType[1].name,
-                quote: defaultType[1].quote,
-                matchRate: 72 + Math.floor(Math.random() * 15),
-                self: defaultType[1].self,
-                emotion: defaultType[1].emotion,
-                attitude: defaultType[1].attitude,
-                action: defaultType[1].action,
-                social: defaultType[1].social
-            };
-        }
-
-        // ==================== 雷达图 ====================
-        function drawRadarChart(self, emotion, attitude, action, social) {
-            const canvas = document.getElementById('radarChart');
-            const ctx = canvas.getContext('2d');
-            const centerX = 140;
-            const centerY = 140;
-            const radius = 100;
-
-            canvas.width = 280;
-            canvas.height = 280;
-
-            ctx.clearRect(0, 0, 280, 280);
-
-            const labels = ['自我', '情感', '态度', '行动', '社交'];
-            const values = [self, emotion, attitude, action, social];
-            const numPoints = 5;
-            const angleStep = (Math.PI * 2) / numPoints;
-
-            // 绘制背景网格
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 1;
-
-            for (let level = 1; level <= 4; level++) {
-                const levelRadius = (radius / 4) * level;
-                ctx.beginPath();
-                for (let i = 0; i <= numPoints; i++) {
-                    const angle = i * angleStep - Math.PI / 2;
-                    const x = centerX + Math.cos(angle) * levelRadius;
-                    const y = centerY + Math.sin(angle) * levelRadius;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            }
-
-            // 绘制轴线
-            for (let i = 0; i < numPoints; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
-                ctx.stroke();
-            }
-
-            // 绘制数据区域
-            const gradient = ctx.createLinearGradient(0, 0, 280, 280);
-            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.8)');
-            gradient.addColorStop(1, 'rgba(240, 147, 251, 0.8)');
-
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-
-            for (let i = 0; i <= numPoints; i++) {
-                const index = i % numPoints;
-                const angle = index * angleStep - Math.PI / 2;
-                const value = (values[index] / 100) * radius;
-                const x = centerX + Math.cos(angle) * value;
-                const y = centerY + Math.sin(angle) * value;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.fill();
-
-            // 绘制数据点
-            ctx.fillStyle = '#fff';
-            for (let i = 0; i < numPoints; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                const value = (values[i] / 100) * radius;
-                const x = centerX + Math.cos(angle) * value;
-                const y = centerY + Math.sin(angle) * value;
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // 绘制标签
-            ctx.fillStyle = '#e4e4e7';
-            ctx.font = '12px PingFang SC';
-            ctx.textAlign = 'center';
-
-            for (let i = 0; i < numPoints; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                const labelRadius = radius + 25;
-                const x = centerX + Math.cos(angle) * labelRadius;
-                const y = centerY + Math.sin(angle) * labelRadius;
-                ctx.fillText(labels[i], x, y);
-            }
-        }
-
-        // ==================== 相似人格 ====================
-        function renderSimilarTypes(mainType) {
-            const grid = document.getElementById('similarGrid');
-            grid.innerHTML = '';
-
-            const typeOrder = Object.keys(personalityTypes);
-            const mainIndex = typeOrder.indexOf(mainType);
-
-            // 获取主类型附近的几个人格
-            const similar = [];
-            const offsets = [-2, -1, 1, 2];
-            offsets.forEach(offset => {
-                let idx = mainIndex + offset;
-                if (idx < 0) idx = typeOrder.length + idx;
-                if (idx >= typeOrder.length) idx = idx - typeOrder.length;
-                if (typeOrder[idx] !== mainType && !['DRUNK', 'RICH', 'GOD', 'LOVER', 'PRO', 'EDGE'].includes(typeOrder[idx])) {
-                    similar.push({
-                        type: typeOrder[idx],
-                        name: personalityTypes[typeOrder[idx]].name,
-                        match: 60 + Math.floor(Math.random() * 20)
-                    });
-                }
-            });
-
-            similar.slice(0, 4).forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'similar-card';
-                div.innerHTML = `
-                    <div class="similar-type">${item.type}</div>
-                    <div class="similar-name">${item.name}</div>
-                    <div class="similar-match">相似度 ${item.match}%</div>
-                `;
-                grid.appendChild(div);
-            });
-        }
-
-        // ==================== 彩蛋 ====================
-        function showEasterEgg(type) {
-            const egg = personalityTypes[type];
-            document.getElementById('easterEggIcon').textContent = type === 'DRUNK' ? '🍺' : '🎉';
-            document.getElementById('easterEggTitle').textContent = `隐藏人格解锁：${type}`;
-            document.getElementById('easterEggDesc').textContent = egg.quote;
-            document.getElementById('easterEggOverlay').classList.add('active');
-        }
-
-        function closeEasterEgg() {
-            document.getElementById('easterEggOverlay').classList.remove('active');
-        }
-
-        // ==================== 分享 ====================
-        function shareResult() {
-            const resultType = document.getElementById('resultType').textContent;
-            const resultName = document.getElementById('resultName').textContent;
-            const resultMatch = document.getElementById('resultMatch').textContent;
-
-            const shareText = `我的 NISB 人格是【${resultType} ${resultName}】，匹配度 ${resultMatch}\n\n"你不是性格有问题，你只是 NISB。"\n\n👉 点击测试你的 NISB 人格`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'NISB 人格测试',
-                    text: shareText,
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                // 复制到剪贴板
-                navigator.clipboard.writeText(shareText).then(() => {
-                    showToast('结果已复制到剪贴板，快去分享吧！');
-                }).catch(() => {
-                    showToast('分享功能暂不可用，请手动复制结果');
-                });
-            }
-        }
-
-        // ==================== 工具函数 ====================
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        function restartTest() {
-            startTest();
-        }
-
-        function goHome() {
-            showPage('homePage');
-        }
-
-        // ==================== 背景动画 ====================
-        function initBackground() {
-            const bg = document.getElementById('bgAnimation');
-            const emojis = ['🧠', '💀', '👻', '🎭', '💫', '✨', '🔮', '💭', '🎪', '🃏'];
-
-            for (let i = 0; i < 15; i++) {
-                const emoji = document.createElement('div');
-                emoji.className = 'floating-emoji';
-                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                emoji.style.left = Math.random() * 100 + '%';
-                emoji.style.top = Math.random() * 100 + '%';
-                emoji.style.animationDelay = Math.random() * 15 + 's';
-                emoji.style.animationDuration = (15 + Math.random() * 10) + 's';
-                bg.appendChild(emoji);
-            }
-        }
-
-        // 初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            initBackground();
+        // 症状标签
+        const tagsContainer = document.getElementById('tagsList');
+        tagsContainer.innerHTML = '';
+        result.traits.forEach(t => {
+            const tag = document.createElement('span');
+            tag.className = 'tag-item';
+            tag.textContent = t;
+            tagsContainer.appendChild(tag);
         });
+
+        // 深度解读
+        const insightList = document.getElementById('insightList');
+        insightList.innerHTML = '';
+        result.insights.forEach(ins => {
+            const card = document.createElement('div');
+            card.className = 'insight-card';
+            card.innerHTML = `<div class="insight-label">${ins.label}</div><div class="insight-text">${ins.text}</div>`;
+            insightList.appendChild(card);
+        });
+
+        // 15维度图表
+        const dimNames = ['自我认知','情绪稳定','压力应对','社交模式','现实感知','情感依赖','边界意识','行动力','内耗程度','价值排序','身份认同','心理韧性','防御机制','生活状态','成瘾倾向'];
+        const keys = ['self','emotion','stress','social','reality','depend','bound','action','inner','value','identity','resilience','defense','life','addict'];
+        const maxScore = 3;
+
+        const chartGrid = document.getElementById('chartGrid');
+        chartGrid.innerHTML = '';
+        keys.forEach((k, i) => {
+            const score = Math.max(0, Math.min(3, userScores[k]));
+            const pct = Math.round(score / maxScore * 100);
+            const cls = pct > 66 ? 'chart-bar-high' : pct > 33 ? 'chart-bar-mid' : 'chart-bar-low';
+
+            const item = document.createElement('div');
+            item.className = 'chart-item';
+            item.innerHTML = `
+                <div class="chart-item-name">${dimNames[i]}</div>
+                <div class="chart-bar ${cls}">
+                    <div class="chart-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="chart-score">${pct}%</div>
+            `;
+            chartGrid.appendChild(item);
+        });
+
+        if (drunkTriggered) {
+            setTimeout(() => showEaster('DRUNK'), 1800);
+        }
+    }
+
+    function matchPersonality() {
+        const totalTags = Object.values(tagCounts).reduce((a,b)=>a+b,0);
+
+        // 隐藏彩蛋优先
+        if (drunkTriggered && alcoholConfirm) {
+            return buildResult('DRUNK');
+        }
+
+        // 标签统计找主类型
+        let topTag = null, topCount = 0;
+        Object.entries(tagCounts).forEach(([tag, count]) => {
+            if (count > topCount) { topCount = count; topTag = tag; }
+        });
+
+        // 低分全面爆发
+        const lowDims = Object.values(userScores).filter(v => v <= 2).length;
+        const veryLowDims = Object.values(userScores).filter(v => v <= 1).length;
+
+        if (veryLowDims >= 10) return buildResult('DEAD');
+        if (topTag === 'dead' && topCount >= 2) return buildResult('DEAD');
+        if (topTag === 'imsb' && topCount >= 3) return buildResult('IMSB');
+        if (topTag === 'malo' && topCount >= 3) return buildResult('MALO');
+        if (topTag === 'zzz' && topCount >= 2) return buildResult('ZZZ');
+        if (topTag === 'atm' && topCount >= 3) return buildResult('ATM');
+        if (topTag === 'ghost' && topCount >= 2) return buildResult('GHOST');
+        if (topTag === 'witch' && topCount >= 2) return buildResult('WITCH');
+        if (topTag === 'boss' && topCount >= 2) return buildResult('BOSS');
+        if (topTag === 'fake' && topCount >= 2) return buildResult('FAKE');
+        if (topTag === 'think' && topCount >= 2) return buildResult('THINK');
+        if (topTag === 'solo' && topCount >= 2) return buildResult('SOLO');
+        if (topTag === 'chaos' && topCount >= 2) return buildResult('CHAOS');
+        if (topTag === 'drunk' && topCount >= 1) return buildResult('DRUNK');
+        if (topTag === 'lover' && topCount >= 2) return buildResult('LOVER');
+        if (topTag === 'heal' && topCount >= 2) return buildResult('HEAL');
+        if (topTag === 'npc' && topCount >= 2) return buildResult('NPC');
+        if (topTag === 'pro' && topCount >= 2) return buildResult('PRO');
+        if (topTag === 'edge' && topCount >= 2) return buildResult('EDGE');
+        if (topTag === 'joke' && topCount >= 2) return buildResult('JOKE');
+
+        // 维度驱动判断
+        const entries = Object.entries(userScores);
+        const highDims = entries.filter(([k,v]) => v >= 2).map(([k]) => k);
+
+        if (highDims.includes('bound') && highDims.includes('self') && highDims.includes('action')) {
+            return buildResult('CTRL');
+        }
+        if (highDims.includes('self') && highDims.includes('identity') && highDims.includes('resilience')) {
+            return buildResult('BOSS');
+        }
+        if (highDims.includes('depend') && !highDims.includes('bound')) {
+            return buildResult('ATM');
+        }
+        if (highDims.includes('inner') && highDims.includes('emotion') && !highDims.includes('stress')) {
+            return buildResult('IMSB');
+        }
+        if (highDims.includes('social') && highDims.includes('defense') === false) {
+            return buildResult('HEAL');
+        }
+        if (lowDims >= 8) return buildResult('DEAD');
+        if (highDims.length >= 10) return buildResult('BOSS');
+        if (highDims.length <= 3) return buildResult('SOLO');
+
+        // 默认
+        const typeKeys = ['MALO','ZZZ','IMSB','GHOST','HEAL','MALO','SOLO'];
+        const defType = typeKeys[Math.floor(Math.random() * typeKeys.length)];
+        return buildResult(defType);
+    }
+
+    function buildResult(typeKey) {
+        const t = personalityTypes[typeKey] || personalityTypes['???'];
+        const match = 72 + Math.floor(Math.random() * 20);
+        return {
+            type: t.emoji + ' ' + typeKey,
+            name: t.name,
+            matchRate: match,
+            diagnosis: t.diagnosis,
+            traits: t.traits,
+            insights: t.insights
+        };
+    }
+
+    // ==================== 彩蛋 ====================
+    function showEaster(type) {
+        const t = personalityTypes[type];
+        document.getElementById('easterIcon').textContent = t.emoji;
+        document.getElementById('easterTitle').textContent = '⚠️ 隐藏确诊触发';
+        document.getElementById('easterDesc').textContent = t.diagnosis;
+        document.getElementById('easterOverlay').classList.add('active');
+    }
+
+    function closeEaster() {
+        document.getElementById('easterOverlay').classList.remove('active');
+    }
+
+    // ==================== 分享 ====================
+    function shareResult() {
+        const t = document.getElementById('resultType').textContent;
+        const n = document.getElementById('resultName').textContent;
+        const m = document.getElementById('resultMatch').textContent;
+        const text = `我的 NISB 确诊结果：${t}\n确诊名称：${n}\n匹配度：${m}\n\n"你不是性格有问题，你只是 NISB。"`;
+
+        if (navigator.share) {
+            navigator.share({ title: 'NISB 人格确诊报告', text, url: location.href }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('确诊报告已复制，快去分享！');
+            }).catch(() => showToast('分享功能暂不可用'));
+        }
+    }
+
+    // ==================== 工具 ====================
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function restartTest() { startTest(); }
+    function goHome() { showPage('homePage'); }
+
+    function initBg() {
+        const bg = document.getElementById('bgAnimation');
+        const emojis = ['🧠','💀','👻','🎭','💫','✨','🔮','💭','🩺','🫀'];
+        for (let i = 0; i < 15; i++) {
+            const el = document.createElement('div');
+            el.className = 'floating-emoji';
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.top = Math.random() * 100 + '%';
+            el.style.animationDelay = Math.random() * 15 + 's';
+            el.style.animationDuration = (15 + Math.random() * 10) + 's';
+            bg.appendChild(el);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initBg);
     </script>
 </body>
 </html>
