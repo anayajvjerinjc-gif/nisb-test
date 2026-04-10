@@ -82,8 +82,9 @@
             display: none;
             animation: fadeIn 0.5s ease;
         }
-        .page { display: none; }
-        .page.active { display: block; }
+        .page.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -1113,9 +1114,9 @@
                 { text: '没有成瘾问题。我能自由地掌控自己的注意力', scores: {self:3,emotion:3,stress:3,social:3,reality:3,depend:3,bound:3,action:3,inner:3,value:3,identity:3,resilience:3,defense:3,life:3,addict:3}, level: 0, tags: ['ctrl'] },
                 { text: '偶尔会沉迷某件事，但能自己控制', scores: {self:2,emotion:2,stress:2,social:2,reality:2,depend:2,bound:2,action:2,inner:2,value:2,identity:2,resilience:2,defense:2,life:2,addict:2}, level: 1, tags: [] },
                 { text: '我有一些依赖，比如短视频、烟、酒或者游戏', scores: {self:1,emotion:1,stress:1,social:1,reality:1,depend:1,bound:1,action:1,inner:1,value:1,identity:1,resilience:1,defense:1,life:1,addict:1}, level: 2, tags: ['drunk','zzz'] },
-                { text: '我需要某些东西才能感觉好一点，否则无法面对生活', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['drunk','dead','addict'] },
-                isEasterEgg: true
-            ]
+                { text: '我需要某些东西才能感觉好一点，否则无法面对生活', scores: {self:0,emotion:0,stress:0,social:0,reality:0,depend:0,bound:0,action:0,inner:0,value:0,identity:0,resilience:0,defense:0,life:0,addict:0}, level: 3, tags: ['drunk','dead','addict'] }
+            ],
+            isEasterEgg: true
         }
     ];
 
@@ -1455,13 +1456,6 @@
             document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
             updateDimIndicator();
         } catch(e) { console.error('renderQuestion error:', e); }
-    }
-
-    function updateDimIndicator() {
-        var dots = document.querySelectorAll('.dim-dot');
-        for (var i = 0; i < dots.length; i++) {
-            dots[i].className = 'dim-dot' + (i < currentQuestion ? ' done' : i === currentQuestion ? ' active' : '');
-        }
     }
 
     function selectOption(index) {
